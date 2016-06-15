@@ -19,49 +19,56 @@ RUN mv /etc/localtime /etc/localtime.bak && \
         ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 # Set Env
-ENV PROJECT_HOME="/app" \
+ENV APP_HOME="/app" \
+    WORK="/work" \
     NAGIOS_HOME="/app/nagios"  \
-    NAGIOS_LOGS="/app/nagios/logs" \
-    WORK=/work
+    NAGIOS_INIT="/work/init" \
+    NAGIOS_CONF="/work/conf" \
+    NAGIOS_USER="nagiosadmin" \
+    NAGIOS_PASS="qwe123" \
+    GRAPHIOS_HOME="/app/nagios/graphios" \
+    GRAPHIOS_LOGS="/app/nagios/graphios/logs" \
+    GRAPHIOS_SPOOL="/var/spool/nagios/graphios" \
+    PREFIX_LOCALHOST="ACS" \
+    INFLUXDB_SERVER="influxdb" \
+    INFLUXDB_DB="stigma" \
+    INFLUXDB_USER="stigma" \
+    INFLUXDB_PASS="stigma"
+
 
 # Make default directory
-RUN mkdir -p $PROJECT_HOME && mkdir -p $WORK && chown -R stigma:stigma $PROJECT_HOME && \
-    mkdir -p $NAGIOS_HOME/logs
+RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && chown -R stigma:stigma ${APP_HOME}
 
 # install Prerequisites
 RUN yum install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip -y
 
 # Create user and group for Nagios to use
-RUN useradd nagios
-RUN groupadd nagcmd
-RUN usermod -a -G nagcmd nagios
-RUN usermod -a -G nagcmd apache
+RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
 
-ADD ./nagiosInstall.sh	$WORK/nagiosInstall.sh
-ADD ./nagiosPlug.sh	$WORK/nagiosPlug.sh
-ADD ./post.sh  $WORK/post.sh
+# ADD Scripts
+ADD ./post.sh  ${WORK}/post.sh
+ADD ./init ${WORK}/init
+ADD ./conf ${WORK}/conf
 
-RUN chmod 755 $WORK/nagiosInstall.sh $WORK/nagiosPlug.sh $WORK/post.sh
+# Permission Update
+RUN chmod 755 ${NAGIOS_INIT}/nagiosInstall.sh ${NAGIOS_INIT}/nagiosPlug.sh ${NAGIOS_INIT}/nrpe.sh ${NAGIOS_INIT}/graphios.sh ${WORK}/post.sh
+
 
 # Install Nagios shall start
-RUN $WORK/nagiosInstall.sh
+RUN ${NAGIOS_INIT}/nagiosInstall.sh
 
-# Creating a password for nagiosadmin
-RUN htpasswd -cb /usr/local/nagios/etc/htpasswd.users nagiosadmin qwe123
 
 # Install Nagios Plugins
-RUN $WORK/nagiosPlug.sh
+RUN ${NAGIOS_INIT}/nagiosPlug.sh
 
-# Install supervisor
-RUN yum install -y supervisor; yum clean all
+# Install NRPE
+RUN ${NAGIOS_INIT}/nrpe.sh
 
-ADD ./supervisord.conf	$WORK/supervisord.conf
-
-#COPY supervisord.conf
-COPY ./supervisord.conf /etc/supervisord.conf
+# Install Graphios
+RUN ${NAGIOS_INIT}/graphios.sh
 
 # compress Application
-RUN cd $WORK && tar cvfz $WORK/nagios.tar.gz $NAGIOS_HOME && rm -rf $PROJECT_HOME
+RUN cd ${WORK} && tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && rm -rf ${NAGIOS_HOME}
 
 EXPOSE 80
 
