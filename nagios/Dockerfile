@@ -7,6 +7,9 @@ RUN groupadd -g 500 -r stigma && useradd -u 500 -r -m -g stigma stigma && \
         echo "stigma:S2curity" | chpasswd && \
         echo "root:Su2crity" | chpasswd
 
+# Install default package
+RUN yum -y install tuned tune-util vim bzip2 gzip unzip tar git wget curl hostname sysvinit-tools util-linux net-tools epel-release openssh* sudo yum-utils
+
 # sudo stigma sshd
 RUN echo stigma ALL=/etc/init.d/sshd >> /etc/sudoers
 RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
@@ -15,7 +18,6 @@ RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 RUN mv /etc/localtime /etc/localtime.bak && \
         ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
-<<<<<<< HEAD
 # Set Env
 ENV APP_HOME="/app" \
     WORK="/work" \
@@ -36,18 +38,10 @@ ENV APP_HOME="/app" \
 
 # Make default directory
 RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && chown -R stigma:stigma ${APP_HOME}
-=======
-# Install Default Package
-RUN yum -y install epel-release net-tools wget curl tar git
 
-# Install Build Dependencies
-RUN yum -y install gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel xinetd unzip
->>>>>>> be8b9b3facab4c31c0c6ecc206d98867053e8266
+# install Prerequisites
+RUN yum install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip -y
 
-# Install Prerequisites
-RUN yum -y install httpd php php-mysql
-
-<<<<<<< HEAD
 # Create user and group for Nagios to use
 RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
 
@@ -75,48 +69,7 @@ RUN ${NAGIOS_INIT}/graphios.sh
 
 # compress Application
 RUN cd ${WORK} && tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && rm -rf ${NAGIOS_HOME}
-=======
-# Create User and Group for Nagios to Use
-RUN useradd nagios && \
-        groupadd nagcmd && \
-        usermod -a -G nagcmd nagios
 
-# Set Env
-ENV PROJECT_HOME="/app" \
-        WORK="/work"
-
-# Make default directory
-RUN mkdir -p $PROJECT_HOME && mkdir -p $WORK && \
-        chown -R stigma:stigma $PROJECT_HOME
-
-# 
-ADD ./nagios.sh $WORK/nagios.sh
-ADD ./plugins.sh $WORK/plugins.sh
-ADD ./nrpe.sh $WORK/nrpe.sh
-ADD ./graphios.sh $WORK/graphios.sh
-ADD ./post.sh $WORK/post.sh
-
-# 
-RUN chmod 755 $WORK/nagios.sh $WORK/plugins.sh $WORK/nrpe.sh $WORK/graphios.sh $WORK/post.sh
-
-# Install Nagios
-RUN $WORK/nagios.sh
-
-# Install Nagios Plugins
-RUN $WORK/plugins.sh
-
-# Install NRPE
-RUN $WORK/nrpe.sh
-
-# Install Graphios
-RUN $WORK/graphios.sh
-
-# 
-RUN yum clean all
->>>>>>> be8b9b3facab4c31c0c6ecc206d98867053e8266
-
-# 
 EXPOSE 80
 
-# 
-CMD ["$WORK/post.sh"]
+CMD ["/work/post.sh"]

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-echo "\n##### Running #####\n"
 
-<<<<<<< HEAD
 # Nagios & Graphios ENV Check
 set -m
 : "${APP_HOME:=/app}"
@@ -106,21 +104,3 @@ apachectl -f /etc/httpd/conf/httpd.conf -DFOREGROUND
 
 
 
-=======
-export NAGIOS_HOME="/app/nagios"
-
-#if [ -e ${NAGIOS_HOME} ]
-#then
-#    echo "${NAGIOS_HOME} already exists."
-#else
-#    echo "${NAGIOS_HOME} does not exists."
-#    tar xvfz $WORK/nagios.tar.gz
-#fi
-
-chkconfig httpd on
-chkconfig nagios on
-
-service httpd restart
-service nagios restart
-service xinetd restart
->>>>>>> be8b9b3facab4c31c0c6ecc206d98867053e8266
