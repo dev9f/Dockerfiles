@@ -1,8 +1,6 @@
 #!/bin/bash
 
 export NAGIOS_HOME="/app/nagios"
-export NAGIOS_USER="nagiosadmin"
-export NAGIOS_PASS="qwe123"
 
 echo "Nagios core Install"
 
@@ -20,5 +18,3 @@ make install-config
 make install-commandmode
 make install-webconf
 
-#Creating a password for nagiosadmin
-htpasswd -cb ${NAGIOS_HOME}/etc/htpasswd.users ${NAGIOS_USER} ${NAGIOS_PASS}
