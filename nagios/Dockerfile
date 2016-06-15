@@ -31,11 +31,10 @@ RUN useradd nagios && \
 
 # Set Env
 ENV PROJECT_HOME="/app" \
-        NAGIOS_HOME="/app/nagios" \
         WORK="/work"
 
 # Make default directory
-RUN mkdir -p $NAGIOS_HOME/logs && mkdir -p $WORK && \
+RUN mkdir -p $PROJECT_HOME && mkdir -p $WORK && \
         chown -R stigma:stigma $PROJECT_HOME
 
 # 

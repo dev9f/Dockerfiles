@@ -6,6 +6,7 @@ export NAGIOS_HOME="/app/nagios"
 export NAGIOS_USER="nagiosadmin"
 export NAGIOS_PASSWD="nagiosadmin"
 
+mkdir -p $NAGIOS_HOME/logs
 cd $NAGIOS_HOME
 curl -L -O https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.1.1.tar.gz
 tar zxf nagios-*.tar.gz
