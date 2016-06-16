@@ -11,9 +11,9 @@ RUN groupadd -g 500 -r stigma && useradd -u 500 -r -m -g stigma stigma && \
 RUN yum -y install tuned tune-util vim bzip2 gzip unzip tar git wget curl hostname sysvinit-tools util-linux net-tools epel-release openssh* sudo yum-utils
 
 # Install mysql package 
-RUN yum -y update; yum clean all
-RUN yum -y install epel-release; yum clean all
-RUN yum -y install mysql-server mysql pwgen supervisor bash-completion psmisc; yum clean all
+RUN yum -y update; yum clean all && \
+    yum -y install epel-release; yum clean all && \
+    yum -y install mysql-server mysql pwgen supervisor bash-completion psmisc; yum clean all
 
 # sudo stigma sshd
 RUN echo stigma ALL=/etc/init.d/sshd >> /etc/sudoers
@@ -24,31 +24,17 @@ RUN mv /etc/localtime /etc/localtime.bak && \
         ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 # Set Env
-ENV PROJECT_HOME="/app" \
-    MYSQL_HOME="/app/mysql"  \
-    MYSQL_LOGS="/app/mysql/logs" \
+ENV APP_HOME="/app" \
     WORK=/work
 
 #make default directory
-RUN mkdir -p $PROJECT_HOME && mkdir -p $WORK && chown -R stigma:stigma $PROJECT_HOME && \
-    mkdir -p $MYSQL_HOME/logs
+RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R stigma:stigma $APP_HOME
 
 ADD ./post.sh $WORK/post.sh
-ADD ./config_mysql.sh $WORK/config_mysql.sh
-ADD ./supervisord.conf $WORK/supervisord.conf
-
-# COPY supervisord.conf
-COPY ./supervisord.conf /etc/supervisord.conf
-COPY ./post.sh	$WORK
+ADD ./my.cnf	$WORK/my.cnf
 
 # RUN echo %sudo	ALL=NOPASSWD: ALL >> /etc/sudoers
-
-RUN chmod 755 $WORK/post.sh
-RUN chmod 755 $WORK/config_mysql.sh
-RUN $WORK/config_mysql.sh
-
-# compress Application
-RUN cd $WORK && tar cvfz $WORK/mysql.tar.gz $MYSQL_HOME && rm -rf $PROJECT_HOME
+RUN chmod 755 $WORK/post.sh && chmod 755 $WORK/my.cnf
 
 # mysql port
 EXPOSE 3306
