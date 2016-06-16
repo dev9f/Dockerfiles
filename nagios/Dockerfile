@@ -28,12 +28,7 @@ ENV APP_HOME="/app" \
     NAGIOS_PASS="qwe123" \
     GRAPHIOS_HOME="/app/nagios/graphios" \
     GRAPHIOS_LOGS="/app/nagios/graphios/logs" \
-    GRAPHIOS_SPOOL="/var/spool/nagios/graphios" \
-    PREFIX_LOCALHOST="ACS" \
-    INFLUXDB_SERVER="influxdb" \
-    INFLUXDB_DB="stigma" \
-    INFLUXDB_USER="stigma" \
-    INFLUXDB_PASS="stigma"
+    GRAPHIOS_SPOOL="/var/spool/nagios/graphios" 
 
 
 # Make default directory
