@@ -1,18 +1,14 @@
 #!/bin/bash
 
-#export APP_HOME="/app"
-#export WORK="/work"
-export MYSQL_HOME="/app/mysql"
-export MYSQL_LOGS="/app/mysql/logs"
-export MYSQL_CONF="/app/mysql/conf"
-export MYSQL_DATADIR="/app/mysql/mysql"
-export MYSQL_LANG="/usr/share/mysql"
-export MYSQLD_SAFE_CONF="--defaults-file=${MYSQL_CONF}/my.cnf --datadir=${MYSQL_DATADIR} --basedir=${MYSQL_HOME} --language=${MYSQL_LANG}/english"
+#APP_HOME="/app"
+#WORK="/work"
 
-#MYSQL_ROOT_PASSWORD
-#MYSQL_DATABASE
-#MYSQL_USER
-#MYSQL_PASSWORD
+set -m
+: "${MYSQL_HOME:=/app/mysql}"
+: "${MYSQL_LOGS:=/app/mysql/logs}"
+: "${MYSQL_CONF:=/app/mysql/conf}"
+: "${MYSQL_DATADIR:=/app/mysql/mysql}"
+: "${MYSQL_LANG:=/usr/share/mysql}"
 
 function makedir() {
        mkdir -p ${MYSQL_HOME}/logs
@@ -24,6 +20,7 @@ function initialize_database() {
        mysql_install_db --defaults-file=${MYSQL_CONF}/my.cnf
        chown -R mysql:mysql ${MYSQL_DATADIR}
 }
+
 function bg_stop() {
        echo 'Shutdown local mysql db ...'
        kill $(pgrep mysqld)
@@ -42,34 +39,41 @@ function check_root_password() {
 
 function create_database() {
 
-       if [ -z ${MYSQL_DATABASE} ]; then
-               echo "No create Database"
-       else
-               #Create database
-               mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "create database ${MYSQL_DATABASE}"
-               mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'"
-               mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES"
-       fi
+	#Create database
+        mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "create database ${MYSQL_DATABASE}"
+        mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'"
+        mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES"
 }
 
-if [ -e ${MYSQL_HOME} ]
-then
-       echo "${MYSQL_HOME} already exists."
+if [ -e ${MYSQL_HOME} ]; then
+        echo "${MYSQL_HOME} already exists ..."
 else
-       echo "${MYSQL_HOME} does not exists."
-       makedir
-       cp ${WORK}/my.cnf $MYSQL_CONF/my.cnf
-       initialize_database
-
-       # Start app in the background
-       /usr/bin/mysqld_safe ${MYSQLD_SAFE_CONF} &
-       sleep 3
-      
-       check_root_password
-       create_database
-      
-       bg_stop
+        echo "${MYSQL_HOME} does not exists ..."
+        makedir
+        cp ${WORK}/my.cnf $MYSQL_CONF/my.cnf
 fi
-       # Start app in the foreground
-       /usr/bin/mysqld_safe ${MYSQLD_SAFE_CONF}
+
+if [ ! -d "${MYSQL_DATADIR}" ]; then
+	echo "Initializing Database..."
+   	initialize_database
+else
+   	echo "Do not initialize Database.Just start..."
+fi
+
+# Start app in the background
+/usr/bin/mysqld_safe --defaults-file=${MYSQL_CONF}/my.cnf --datadir=${MYSQL_DATADIR} --basedir=${MYSQL_HOME} --language=${MYSQL_LANG}/english &
+sleep 3
+     
+check_root_password
+      
+if [ ! -z ${MYSQL_DATABASE} ]; then
+	create_database
+else
+	echo "No create Database"
+fi
+	
+bg_stop
+       
+# Start app in the foreground
+/usr/bin/mysqld_safe --defaults-file=${MYSQL_CONF}/my.cnf --datadir=${MYSQL_DATADIR} --basedir=${MYSQL_HOME} --language=${MYSQL_LANG}/english
 
