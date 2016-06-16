@@ -12,10 +12,10 @@ set -m
 : "${GRAPHIOS_SPOOL:=/var/spool/nagios/graphios}"
 : "${GRAPHIOS_USED:=y}"
 : "${PREFIX_LOCALHOST:=stigma}"
-: "${INFLUXDB_SERVER:=influxdb}"
-: "${INFLUXDB_DB:=stigma}"
-: "${INFLUXDB_USER:=stigma}"
-: "${INFLUXDB_PASS:=stigma}"
+: "${INFLUXDB_PORT_8086_TCP_ADDR:=influxdb}"
+: "${INFLUXDB_ENV_IFDB_INIT_DB:=stigma}"
+: "${INFLUXDB_ENV_IFDB_INIT_DB_USER_NM:=stigma}"
+: "${INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD:=stigma}"
 
 
 function backup_config () {
@@ -59,10 +59,10 @@ function modify_graphios_config () {
 
  sed -i 's/enable_influxdb = False/enable_influxdb = True/g' ${GRAPHIOS_HOME}/graphios.cfg
  echo "## InfluxDB Information of Nagios Status Data" >> ${GRAPHIOS_HOME}/graphios.cfg
- echo "influxdb_servers = $INFLUXDB_SERVER:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
- echo "influxdb_db = $INFLUXDB_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
- echo "influxdb_user = $INFLUXDB_USER" >> ${GRAPHIOS_HOME}/graphios.cfg
- echo "influxdb_password = $INFLUXDB_PASS" >> ${GRAPHIOS_HOME}/graphios.cfg
+ echo "influxdb_servers = $INFLUXDB_PORT_8086_TCP_ADDR:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
+ echo "influxdb_db = $INFLUXDB_ENV_IFDB_INIT_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
+ echo "influxdb_user = $INFLUXDB_ENV_IFDB_INIT_DB_USER_NM" >> ${GRAPHIOS_HOME}/graphios.cfg
+ echo "influxdb_password = $INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD" >> ${GRAPHIOS_HOME}/graphios.cfg
 
 }
 
