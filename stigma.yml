@@ -2,6 +2,9 @@ stigma:
   image: stigma
   links:
     - mysql
+    - nagios
+    - influxdb
+    - grafana
   ports:
     - 22:22
     - 80:80
@@ -16,7 +19,7 @@ mysql:
   ports:
     - 3306:3306
   environment:
-    MYSQL_ROOT_PASSWORD: secret
+    MYSQL_ROOT_PASSWORD: password
     MYSQL_DATABASE: stigma
   volumes:
     - /root/dockerVol:/app

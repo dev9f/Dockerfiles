@@ -2,16 +2,16 @@ FROM centos:6
 
 MAINTAINER heeminChae / version: 1.0
 
-# Add Default User Account : stigma / Change Password : root, stigma
-RUN groupadd -g 500 -r stigma && useradd -u 500 -r -m -g stigma stigma && \
-        echo "stigma:S2curity" | chpasswd && \
-        echo "root:Su2crity" | chpasswd
+# Add Default User Account : suser / Change Password : root, suser
+RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
+        echo "suser:S2curity" | chpasswd && \
+        echo "root:S2crity" | chpasswd
 
 # Install default package
-RUN yum -y install tuned tune-util vim bzip2 gzip unzip tar git wget curl hostname sysvinit-tools util-linux net-tools epel-release openssh* sudo yum-utils
+RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo 
 
-# sudo stigma sshd
-RUN echo stigma ALL=/etc/init.d/sshd >> /etc/sudoers
+# sudo suser sshd
+RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
 RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 
 # TimeZone Change : KST
@@ -32,13 +32,28 @@ ENV APP_HOME="/app" \
 
 
 # Make default directory
-RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && chown -R stigma:stigma ${APP_HOME}
+RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && chown -R suser:suser ${APP_HOME}
 
 # install Prerequisites
 RUN yum install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip -y
 
 # Create user and group for Nagios to use
 RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
+
+### For nagios-dev ##################################
+# Install SW Packages
+RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm && \
+    yum-config-manager --enable remi-php56,remi
+
+# Install Apache, PHP
+RUN yum -y install php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer && \
+    chmod +x /usr/local/bin/composer
+### For nagios-dev ##################################
+
 
 # ADD Scripts
 ADD ./post.sh  ${WORK}/post.sh

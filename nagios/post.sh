@@ -74,6 +74,16 @@ then
 else
     echo "${NAGIOS_HOME} does not exists."
     tar xvfz ${WORK}/nagios.tar.gz -C /
+
+    ### nagios_dev 
+    echo "+++++ Laravel App Directory create and copy config files..."
+    cp ${WORK}/conf/httpd-vhosts.conf /etc/httpd/conf.d/
+    ## Laravel Setting
+    cd ${APP_HOME} && git clone https://github.com/stigma2/nagios-dev.git nagios_dev
+    cd ${APP_HOME}/nagios_dev && chmod -R 777 storage && composer install
+    cp ${APP_HOME}/nagios_dev/.env.example ${APP_HOME}/nagios_dev/.env
+    cd ${APP_HOME}/nagios_dev && php artisan key:generate
+    ### nagios_dev 
 fi
 
 #Creating a password for nagiosadmin
@@ -95,12 +105,10 @@ then
     nohup  ${GRAPHIOS_HOME}/graphios.py -v --backend=influxdb --config_file=${GRAPHIOS_HOME}/graphios.cfg 1> /dev/null 2>&1 & 
 fi
 
+
+
 # Nagios Start
-${NAGIOS_HOME}/bin/nagios -d ${NAGIOS_HOME}/etc/nagios.cfg
+${NAGIOS_HOME}/bin/nagios ${NAGIOS_HOME}/etc/nagios.cfg &
 
 #httpd start
 apachectl -f /etc/httpd/conf/httpd.conf -DFOREGROUND
-
-
-
-

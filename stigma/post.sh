@@ -6,10 +6,10 @@ set -m
 : "${STIGMA_NAGIOS_HOST:=nagios}"
 : "${STIGMA_IFDB_HOST:=influxdb}"
 : "${STIGMA_GRAFANA_HOST:=grafana}"
-: "${STIGMA_DB_HOST:=mysql}"
-: "${STIGMA_DB_DATABASE:=stigma}"
-: "${STIGMA_DB_USERNAME:=root}"
-: "${STIGMA_DB_PASSWORD:=qwe123}"
+: "${MYSQL_HOST:=mysql}"
+: "${MYSQL_DATABASE:=stigma}"
+: "${MYSQL_USER:=root}"
+: "${MYSQL_ROOT_PASSWORD:=password}"
 
 function setup_httpd_vhosts() {
     cp ${WORK_CONF}/httpd-vhosts.conf /etc/httpd/conf.d/
@@ -23,24 +23,24 @@ function setup_env() {
     sed -i "s/DB_PASSWORD=/#DB_PASSWORD=/g" ${STIGMA_HOME}/.env
 
 #    cat <<'EOF' >> ${STIGMA_HOME}/.env
-#    DB_HOST=###STIGMA_DB_HOST###
-#    DB_DATABASE=###STIGMA_DB_DATABASE###
-#    DB_USERNAME=###STIGMA_DB_USERNAME###
-#    DB_PASSWORD=###STIGMA_DB_PASSWORD###
+#    DB_HOST=###MYSQL_HOST###
+#    DB_DATABASE=###MYSQL_DATABASE###
+#    DB_USERNAME=###MYSQL_USER###
+#    DB_PASSWORD=###MYSQL_ROOT_PASSWORD###
 #    EOF
 #
-#    sed -i "s|###STIGMA_DB_HOST###|${STIGMA_DB_HOST}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###STIGMA_DB_DATABASE###|${STIGMA_DB_DATABASE}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###STIGMA_DB_USERNAME###|${STIGMA_DB_USERNAME}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###STIGMA_DB_PASSWORD###|${STIGMA_DB_PASSWORD}|g" ${STIGMA_HOME}/.env
+#    sed -i "s|###MYSQL_HOST###|${MYSQL_HOST}|g" ${STIGMA_HOME}/.env
+#    sed -i "s|###MYSQL_DATABASE###|${MYSQL_DATABASE}|g" ${STIGMA_HOME}/.env
+#    sed -i "s|###MYSQL_USER###|${MYSQL_USER}|g" ${STIGMA_HOME}/.env
+#    sed -i "s|###MYSQL_ROOT_PASSWORD###|${MYSQL_ROOT_PASSWORD}|g" ${STIGMA_HOME}/.env
 
     echo "NAGIOS_HOST="${STIGMA_NAGIOS_HOST} >> ${STIGMA_HOME}/.env
     echo "IFDB_HOST="${STIGMA_IFDB_HOST} >> ${STIGMA_HOME}/.env
     echo "GRAFANA_HOST="${STIGMA_GRAFANA_HOST} >> ${STIGMA_HOME}/.env
-    echo "DB_HOST="${STIGMA_DB_HOST} >> ${STIGMA_HOME}/.env
-    echo "DB_DATABASE="${STIGMA_DB_DATABASE} >> ${STIGMA_HOME}/.env
-    echo "DB_USERNAME="${STIGMA_DB_USERNAME} >> ${STIGMA_HOME}/.env
-    echo "DB_PASSWORD="${STIGMA_DB_PASSWORD} >> ${STIGMA_HOME}/.env
+    echo "DB_HOST="${MYSQL_HOST} >> ${STIGMA_HOME}/.env
+    echo "DB_DATABASE="${MYSQL_DATABASE} >> ${STIGMA_HOME}/.env
+    echo "DB_USERNAME="${MYSQL_USER} >> ${STIGMA_HOME}/.env
+    echo "DB_PASSWORD="${MYSQL_ROOT_PASSWORD} >> ${STIGMA_HOME}/.env
 }
 
 if [ -e ${STIGMA_HOME} ]
