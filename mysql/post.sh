@@ -9,6 +9,8 @@ set -m
 : "${MYSQL_CONF:=/app/mysql/conf}"
 : "${MYSQL_DATADIR:=/app/mysql/mysql}"
 : "${MYSQL_LANG:=/usr/share/mysql}"
+: "${MYSQL_ROOT_PASSWORD:=password}"
+: "${MYSQL_DATABASE:=stigma}"
 
 function makedir() {
        mkdir -p ${MYSQL_HOME}/logs
@@ -30,10 +32,10 @@ function bg_stop() {
 function check_root_password() {
 
        # MYSQL_ROOT_PASSWORD
-       if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
-               MYSQL_ROOT_PASSWORD=password
-               echo 'root password is ${MYSQL_ROOT_PASSWORD}'
-       fi
+#       if [ -z ${MYSQL_ROOT_PASSWORD} ]; then
+#               MYSQL_ROOT_PASSWORD=password
+#               echo 'root password is ${MYSQL_ROOT_PASSWORD}'
+#       fi
        mysqladmin -u root password ${MYSQL_ROOT_PASSWORD}
 }
 

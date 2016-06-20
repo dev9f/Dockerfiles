@@ -8,7 +8,7 @@ set -m
 : "${STIGMA_GRAFANA_HOST:=grafana}"
 : "${MYSQL_HOST:=mysql}"
 : "${MYSQL_DATABASE:=stigma}"
-: "${MYSQL_USER:=root}"
+: "${MYSQL_USERNAME:=root}"
 : "${MYSQL_ROOT_PASSWORD:=password}"
 
 function setup_httpd_vhosts() {
@@ -25,13 +25,13 @@ function setup_env() {
 #    cat <<'EOF' >> ${STIGMA_HOME}/.env
 #    DB_HOST=###MYSQL_HOST###
 #    DB_DATABASE=###MYSQL_DATABASE###
-#    DB_USERNAME=###MYSQL_USER###
+#    DB_USERNAME=###MYSQL_USERNAME###
 #    DB_PASSWORD=###MYSQL_ROOT_PASSWORD###
 #    EOF
 #
 #    sed -i "s|###MYSQL_HOST###|${MYSQL_HOST}|g" ${STIGMA_HOME}/.env
 #    sed -i "s|###MYSQL_DATABASE###|${MYSQL_DATABASE}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###MYSQL_USER###|${MYSQL_USER}|g" ${STIGMA_HOME}/.env
+#    sed -i "s|###MYSQL_USERNAME###|${MYSQL_USERNAME}|g" ${STIGMA_HOME}/.env
 #    sed -i "s|###MYSQL_ROOT_PASSWORD###|${MYSQL_ROOT_PASSWORD}|g" ${STIGMA_HOME}/.env
 
     echo "NAGIOS_HOST="${STIGMA_NAGIOS_HOST} >> ${STIGMA_HOME}/.env
@@ -39,7 +39,7 @@ function setup_env() {
     echo "GRAFANA_HOST="${STIGMA_GRAFANA_HOST} >> ${STIGMA_HOME}/.env
     echo "DB_HOST="${MYSQL_HOST} >> ${STIGMA_HOME}/.env
     echo "DB_DATABASE="${MYSQL_DATABASE} >> ${STIGMA_HOME}/.env
-    echo "DB_USERNAME="${MYSQL_USER} >> ${STIGMA_HOME}/.env
+    echo "DB_USERNAME="${MYSQL_USERNAME} >> ${STIGMA_HOME}/.env
     echo "DB_PASSWORD="${MYSQL_ROOT_PASSWORD} >> ${STIGMA_HOME}/.env
 }
 
@@ -58,6 +58,7 @@ else
     cd ${STIGMA_HOME} && php artisan key:generate
     setup_env
     cd ${STIGMA_HOME} && php artisan migrate && php artisan db:seed
+    chmod 777 ${STIGMA_HOME}/config # && chown nagios:apache ${STIGMA_HOME}/config
 fi
 
 
