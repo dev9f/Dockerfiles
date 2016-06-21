@@ -1,0 +1,12 @@
+PKG="NGOSplugin"
+NAME="nagios-plugins"
+DESC="Nagios network monitoring plugins"
+ARCH="x86_64"
+VERSION="2.1.1,REV=2016.06.21.14.52"
+CATEGORY="application"
+VENDOR="Nagios Plugin Development Team"
+EMAIL="devel@nagios-plugins.org"
+PSTAMP="nag20160621145257"
+BASEDIR="/"
+CLASSES="none"
+

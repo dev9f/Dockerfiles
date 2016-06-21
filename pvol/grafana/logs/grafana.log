@@ -1,0 +1,114 @@
+2016/06/21 15:23:42 [I] Starting Grafana
+2016/06/21 15:23:42 [I] Version: 3.0.4, Commit: v3.0.4, Build date: 2016-05-25 17:46:55 +0900 KST
+2016/06/21 15:23:42 [I] Configuration Info
+Config files:
+  [0]: /usr/share/grafana/conf/defaults.ini
+  [1]: /app/grafana/conf/config.ini
+Command lines overrides:
+  [0]: default.paths.data=/app/grafana/data
+  [1]: default.paths.logs=/app/grafana/logs
+  [2]: default.paths.plugins=/app/grafana/plugins
+Paths:
+  home: /usr/share/grafana
+  data: /app/grafana/data
+  logs: /app/grafana/logs
+  plugins: /app/grafana/plugins
+
+2016/06/21 15:23:42 [I] Database: sqlite3
+2016/06/21 15:23:42 [I] Migrator: Starting DB migration
+2016/06/21 15:23:42 [I] Migrator: exec migration id: create migration_log table
+2016/06/21 15:23:42 [I] Migrator: exec migration id: create user table
+2016/06/21 15:23:42 [I] Migrator: exec migration id: add unique index user.login
+2016/06/21 15:23:42 [I] Migrator: exec migration id: add unique index user.email
+2016/06/21 15:23:42 [I] Migrator: exec migration id: drop index UQE_user_login - v1
+2016/06/21 15:23:43 [I] Migrator: exec migration id: drop index UQE_user_email - v1
+2016/06/21 15:23:43 [I] Migrator: exec migration id: Rename table user to user_v1 - v1
+2016/06/21 15:23:43 [I] Migrator: exec migration id: create user table v2
+2016/06/21 15:23:43 [I] Migrator: exec migration id: create index UQE_user_login - v2
+2016/06/21 15:23:43 [I] Migrator: exec migration id: create index UQE_user_email - v2
+2016/06/21 15:23:43 [I] Migrator: exec migration id: copy data_source v1 to v2
+2016/06/21 15:23:43 [I] Migrator: exec migration id: Drop old table user_v1
+2016/06/21 15:23:43 [I] Migrator: exec migration id: create temp user table v1-7
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index IDX_temp_user_email - v1-7
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index IDX_temp_user_org_id - v1-7
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index IDX_temp_user_code - v1-7
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index IDX_temp_user_status - v1-7
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create star table
+2016/06/21 15:23:44 [I] Migrator: exec migration id: add unique index star.user_id_dashboard_id
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create org table v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index UQE_org_name - v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create org_user table v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index IDX_org_user_org_id - v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index UQE_org_user_org_id_user_id - v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: copy data account to org
+2016/06/21 15:23:44 [I] Migrator: skipping migration id: copy data account to org, condition not fulfilled
+2016/06/21 15:23:44 [I] Migrator: exec migration id: copy data account_user to org_user
+2016/06/21 15:23:44 [I] Migrator: skipping migration id: copy data account_user to org_user, condition not fulfilled
+2016/06/21 15:23:44 [I] Migrator: exec migration id: Drop old table account
+2016/06/21 15:23:44 [I] Migrator: exec migration id: Drop old table account_user
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create dashboard table
+2016/06/21 15:23:44 [I] Migrator: exec migration id: add index dashboard.account_id
+2016/06/21 15:23:44 [I] Migrator: exec migration id: add unique index dashboard_account_id_slug
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create dashboard_tag table
+2016/06/21 15:23:44 [I] Migrator: exec migration id: add unique index dashboard_tag.dasboard_id_term
+2016/06/21 15:23:44 [I] Migrator: exec migration id: drop index UQE_dashboard_tag_dashboard_id_term - v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: Rename table dashboard to dashboard_v1 - v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create dashboard v2
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index IDX_dashboard_org_id - v2
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create index UQE_dashboard_org_id_slug - v2
+2016/06/21 15:23:44 [I] Migrator: exec migration id: copy dashboard v1 to v2
+2016/06/21 15:23:44 [I] Migrator: exec migration id: drop table dashboard_v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: alter dashboard.data to mediumtext v1
+2016/06/21 15:23:44 [I] Migrator: exec migration id: Add column updated_by in dashboard - v2
+2016/06/21 15:23:44 [I] Migrator: exec migration id: Add column created_by in dashboard - v2
+2016/06/21 15:23:44 [I] Migrator: exec migration id: create data_source table
+2016/06/21 15:23:44 [I] Migrator: exec migration id: add index data_source.account_id
+2016/06/21 15:23:45 [I] Migrator: exec migration id: add unique index data_source.account_id_name
+2016/06/21 15:23:45 [I] Migrator: exec migration id: drop index IDX_data_source_account_id - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: drop index UQE_data_source_account_id_name - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: Rename table data_source to data_source_v1 - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create data_source table v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create index IDX_data_source_org_id - v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create index UQE_data_source_org_id_name - v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: copy data_source v1 to v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: Drop old table data_source_v1 #2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: Add column with_credentials
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create api_key table
+2016/06/21 15:23:45 [I] Migrator: exec migration id: add index api_key.account_id
+2016/06/21 15:23:45 [I] Migrator: exec migration id: add index api_key.key
+2016/06/21 15:23:45 [I] Migrator: exec migration id: add index api_key.account_id_name
+2016/06/21 15:23:45 [I] Migrator: exec migration id: drop index IDX_api_key_account_id - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: drop index UQE_api_key_key - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: drop index UQE_api_key_account_id_name - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: Rename table api_key to api_key_v1 - v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create api_key table v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create index IDX_api_key_org_id - v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create index UQE_api_key_key - v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create index UQE_api_key_org_id_name - v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: copy api_key v1 to v2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: Drop old table api_key_v1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create dashboard_snapshot table v4
+2016/06/21 15:23:45 [I] Migrator: exec migration id: drop table dashboard_snapshot_v4 #1
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create dashboard_snapshot table v5 #2
+2016/06/21 15:23:45 [I] Migrator: exec migration id: create index UQE_dashboard_snapshot_key - v5
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create index UQE_dashboard_snapshot_delete_key - v5
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create index IDX_dashboard_snapshot_user_id - v5
+2016/06/21 15:23:46 [I] Migrator: exec migration id: alter dashboard_snapshot to mediumtext v2
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create quota table v1
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create index UQE_quota_org_id_user_id_target - v1
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create plugin_setting table
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create index UQE_plugin_setting_org_id_plugin_id - v1
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create session table
+2016/06/21 15:23:46 [I] Migrator: exec migration id: Drop old table playlist table
+2016/06/21 15:23:46 [I] Migrator: exec migration id: Drop old table playlist_item table
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create playlist table v2
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create playlist item table v2
+2016/06/21 15:23:46 [I] Migrator: exec migration id: drop preferences table v2
+2016/06/21 15:23:46 [I] Migrator: exec migration id: drop preferences table v3
+2016/06/21 15:23:46 [I] Migrator: exec migration id: create preferences table v3
+2016/06/21 15:23:47 [I] Created default admin user: admin
+2016/06/21 15:23:47 [I] Plugins: Scan starting
+2016/06/21 15:23:47 [W] Plugins: Plugin dir /app/grafana/plugins does not exist
+2016/06/21 15:23:47 [I] Plugins: Plugin dir /app/grafana/plugins created
+2016/06/21 15:23:47 [I] Listen: http://0.0.0.0:3000
+2016/06/21 15:36:05 [I] Received signal terminated. shutting down

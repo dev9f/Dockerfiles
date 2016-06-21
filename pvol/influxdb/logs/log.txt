@@ -1,0 +1,91 @@
+[2016/06/21 15:23:42 KST] [INFO] (main.setupLogging:69) Redirectoring logging to /app/influxdb/logs/log.txt
+[2016/06/21 15:23:42 KST] [INFO] (main.start:164) Starting Influx Server 0.8.8 bound to 0.0.0.0...
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/server.NewServer:43) Opening database at /app/influxdb/data/db
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/wal.NewWAL:40) Opening wal in /app/influxdb/data/wal
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.NewRaftServer:79) Using /dev/urandom to initialize the raft server name
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.NewRaftServer:104) Setting raft name to 7109ba557bb4f323
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/api/http.(*HttpServer).EnableSsl:74) Ssl will be disabled since the ssl port or certificate path weren't set
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).Serve:566) Initializing Raft HTTP server
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).Serve:576) Raft Server Listening at 0.0.0.0:8090
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).startRaft:384) Initializing Raft Server: http://392fdedd535b:8090
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).startRaft:416) Starting as new Raft leader...
+[2016/06/21 15:23:42 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).raftEventHandler:448) (raft:7109ba557bb4f323) Selected as leader. Starting leader loop.
+[2016/06/21 15:23:43 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*InfluxJoinCommand).Apply:252) Adding new server to the cluster config 7109ba557bb4f323
+[2016/06/21 15:23:43 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddPotentialServer:291) Added server to cluster config: 1, http://392fdedd535b:8090, 392fdedd535b:8099
+[2016/06/21 15:23:43 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddPotentialServer:292) Checking whether this is the local server local: 392fdedd535b:8099, new: 392fdedd535b:8099
+[2016/06/21 15:23:43 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddPotentialServer:301) Added the local server
+[2016/06/21 15:23:43 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:96) Waiting for local server to be added
+[2016/06/21 15:23:43 KST] [INFO] (github.com/influxdb/influxdb/wal.(*WAL).SetServerId:109) Setting server id to 1 and recovering
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:128) Recovering from log...
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/cluster.NewWriteBuffer:30) local: Initializing write buffer with buffer size of 10000
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).RecoverFromWAL:1203) Waiting for servers to recover
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*ProtobufServer).ListenAndServe:66) ProtobufServer listening on 0.0.0.0:8099
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/cluster.func·005:1185) Recovering local server
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).recover:1211) No shards to recover for 1
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/cluster.func·005:1187) Recovered local server
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:133) recovered
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*Coordinator).ConnectToProtobufServers:898) Connecting to other nodes in the cluster
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:139) Starting admin interface on port 8083
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:156) Graphite input plugins is disabled
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:178) Collectd input plugins is disabled
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:187) UDP server is disabled
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:216) Starting Http Api server on port 8086
+[2016/06/21 15:23:48 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).reportStats:254) Reporting stats: &client.Series{Name:"reports", Columns:[]string{"os", "arch", "id", "version"}, Points:[][]interface {}{[]interface {}{"linux", "amd64", "7109ba557bb4f323", "0.8.8"}}}
+[2016/06/21 15:23:49 KST] [INFO] (main.setupLogging:69) Redirectoring logging to /app/influxdb/logs/log.txt
+[2016/06/21 15:23:49 KST] [INFO] (main.start:164) Starting Influx Server 0.8.8 bound to 0.0.0.0...
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/server.NewServer:43) Opening database at /app/influxdb/data/db
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/wal.NewWAL:40) Opening wal in /app/influxdb/data/wal
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/api/http.(*HttpServer).EnableSsl:74) Ssl will be disabled since the ssl port or certificate path weren't set
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).Serve:566) Initializing Raft HTTP server
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).Serve:576) Raft Server Listening at 0.0.0.0:8090
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).startRaft:384) Initializing Raft Server: http://392fdedd535b:8090
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*InfluxJoinCommand).Apply:252) Adding new server to the cluster config 7109ba557bb4f323
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddPotentialServer:291) Added server to cluster config: 1, http://392fdedd535b:8090, 392fdedd535b:8099
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddPotentialServer:292) Checking whether this is the local server local: 392fdedd535b:8099, new: 392fdedd535b:8099
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddPotentialServer:301) Added the local server
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).startRaft:409) Recovered from log
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:96) Waiting for local server to be added
+[2016/06/21 15:23:49 KST] [INFO] (github.com/influxdb/influxdb/wal.(*WAL).SetServerId:109) Setting server id to 1 and recovering
+[2016/06/21 15:23:50 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).raftEventHandler:448) (raft:7109ba557bb4f323) Selected as leader. Starting leader loop.
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:128) Recovering from log...
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/cluster.NewWriteBuffer:30) local: Initializing write buffer with buffer size of 10000
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).RecoverFromWAL:1203) Waiting for servers to recover
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*ProtobufServer).ListenAndServe:66) ProtobufServer listening on 0.0.0.0:8099
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/cluster.func·005:1185) Recovering local server
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).recover:1211) No shards to recover for 1
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/cluster.func·005:1187) Recovered local server
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:133) recovered
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*Coordinator).ConnectToProtobufServers:898) Connecting to other nodes in the cluster
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:139) Starting admin interface on port 8083
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:156) Graphite input plugins is disabled
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:178) Collectd input plugins is disabled
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:187) UDP server is disabled
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).ListenAndServe:216) Starting Http Api server on port 8086
+[2016/06/21 15:23:54 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).reportStats:254) Reporting stats: &client.Series{Name:"reports", Columns:[]string{"os", "arch", "id", "version"}, Points:[][]interface {}{[]interface {}{"linux", "amd64", "7109ba557bb4f323", "0.8.8"}}}
+[2016/06/21 15:26:37 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).GetShardToWriteToBySeriesAndTime:834) No matching shards for write at time 1466490386000000u, creating...
+[2016/06/21 15:26:37 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).createShards:865) createShards for space default: start: Thu Jun 16 09:00:00 +0900 KST 2016. end: Thu Jun 23 09:00:00 +0900 KST 2016
+[2016/06/21 15:26:37 KST] [INFO] (github.com/influxdb/influxdb/datastore.(*ShardDatastore).GetOrCreateShard:158) DATASTORE: opening or creating shard /app/influxdb/data/db/shard_db_v2/00001
+[2016/06/21 15:26:37 KST] [INFO] (github.com/influxdb/influxdb/cluster.(*ClusterConfiguration).AddShards:1090) Adding shard to default: 1 - start: Thu Jun 16 09:00:00 +0900 KST 2016 (1466035200). end: Thu Jun 23 09:00:00 +0900 KST 2016 (1466640000). isLocal: true. servers: [1]
+[2016/06/21 15:33:50 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).dropShardsWithRetentionPolicies:537) Checking for shards to drop
+[2016/06/21 15:36:16 KST] [INFO] (main.waitForSignals:24) Received signal: terminated
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:263) Stopping server
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:272) Stopping admin server
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:274) admin server stopped
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:276) Stopping raft server
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/coordinator.(*RaftServer).raftEventHandler:457) (raft:7109ba557bb4f323) Demoted from leader. Ending leader loop.
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:278) Raft server stopped
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:280) Stopping protobuf server
+[2016/06/21 15:36:16 KST] [EROR] (github.com/influxdb/influxdb/coordinator.(*ProtobufServer).ListenAndServe:70) Error with TCP connection. Assuming server is closing: accept tcp [::]:8099: use of closed network connection
+[2016/06/21 15:36:16 KST] [EROR] (github.com/influxdb/influxdb/coordinator.(*ProtobufServer).Close:50) Received error dial tcp 127.0.0.1:8099: connection reset by peer, assuming connection is closed.
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:282) protobuf server stopped
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:284) Stopping wal
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/wal.(*WAL).processClose:234) Closing WAL
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/wal.(*WAL).processClose:244) Closed WAL
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/wal.(*WAL).processEntries:267) Closing wal
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:286) wal stopped
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:288) Stopping shard store
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:290) shard store stopped
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:295) Stopping api server
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/api/http.(*HttpServer).Close:209) Closing http server
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/api/http.(*HttpServer).Close:211) Waiting for all requests to finish before killing the process
+[2016/06/21 15:36:16 KST] [INFO] (github.com/influxdb/influxdb/server.(*Server).Stop:297) Api server stopped
