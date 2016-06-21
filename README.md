@@ -27,7 +27,8 @@ The source includes an Dockerfiles for build STIGMA Container images.
 After git clone, run the following commands:
 
 `docker-compose -p stigma -f stigma-compose.yml up` 
-This will make build STIGMA Container images and running STIGMA project(five sub-systems).
+
+- This will make build STIGMA Container images and running STIGMA project(five sub-systems).
 By the end of this run, you will have running SITGMA Containers(five-subsystems).
 And './pvol directory' is created for use STIGMA Container's persistence volume. 
 
