@@ -2,10 +2,10 @@ FROM centos:6
 
 MAINTAINER heeminChae / version: 1.0
 
-# Add Default User Account : stigma / Change Password : root, stigma
-RUN groupadd -g 500 -r stigma && useradd -u 500 -r -m -g stigma stigma && \
-        echo "stigma:S2curity" | chpasswd && \
-        echo "root:Su2crity" | chpasswd
+# Add Default User Account : suser / Change Password : root, suser
+RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
+        echo "suser:S2curity" | chpasswd && \
+        echo "root:S2curity" | chpasswd
 
 # Install default package
 RUN yum -y install tuned tune-util vim bzip2 gzip unzip tar git wget curl hostname sysvinit-tools util-linux net-tools epel-release openssh* sudo yum-utils
@@ -15,8 +15,8 @@ RUN yum -y update; yum clean all && \
     yum -y install epel-release; yum clean all && \
     yum -y install mysql-server mysql pwgen supervisor bash-completion psmisc; yum clean all
 
-# sudo stigma sshd
-RUN echo stigma ALL=/etc/init.d/sshd >> /etc/sudoers
+# sudo suser sshd
+RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
 RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 
 # TimeZone Change : KST
@@ -28,7 +28,7 @@ ENV APP_HOME="/app" \
     WORK=/work
 
 #make default directory
-RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R stigma:stigma $APP_HOME
+RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R suser:suser $APP_HOME
 
 ADD ./post.sh $WORK/post.sh
 ADD ./my.cnf	$WORK/my.cnf
