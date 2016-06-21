@@ -32,6 +32,12 @@ After git clone, run the following commands:
 By the end of this run, you will have running SITGMA Containers(five-subsystems).
 And './pvol directory' is created for use STIGMA Container's persistence volume. 
 
+## STIGMA Service check
+* SITGMA - http://[docker-engin host] - register 
+* nagisos - https://[docker-engin host]:8080/nagios - nagiosadmin:qwe123
+* influxdb - https://[docker-engin host]:8083 - root:root or stigma:stigma,database=stigma
+* grafana - https://[docker-engin host]:3000 - admin:admin
+
 
 ## Related git repository
 * SITGMA2 - https://github.com/stigma2/stigma2-dev
