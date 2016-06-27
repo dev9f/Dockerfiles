@@ -1,0 +1,72 @@
+version: '2'
+services:
+  stigma:
+    build: ./stigma/.
+    image: dev9f/stigma
+    links:
+      - mysql
+      - nagios
+      - influxdb
+      - grafana
+    ports:
+      - 22:22
+      - 80:80
+    environment:
+      STIGMA_HOME: /app/stigma
+    volumes:
+      - ./pvol:/app
+    container_name: stigma
+
+  mysql:
+    build: ./mysql/.
+    image: dev9f/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: stigma
+    volumes:
+      - ./pvol:/app
+    container_name: mysql
+
+  nagios:
+    build: ./nagios/.
+    image: dev9f/nagios
+    links:
+      - influxdb
+    ports:
+      - 8080:80
+    environment:
+      PREFIX_LOCALHOST: stigma
+    volumes:
+      - ./pvol:/app
+    container_name: nagios
+
+  influxdb:
+    build: ./influxdb/.
+    image: dev9f/influxdb
+    ports:
+      - 8083
+      - 8086
+    environment:
+      IFDB_INIT_DB: stigma
+      IFDB_INIT_DB_USER_NM: stigma
+      IFDB_INIT_DB_USER_PWD: stigma
+    volumes:
+      - ./pvol:/app
+    #container_name: influxdb
+
+  grafana:
+    build: ./grafana/.
+    image: dev9f/grafana
+    ports:
+      - 3000:3000
+    environment:
+      GF_HOME: /app/grafana
+      GF_CONF_FILE: /app/grafana/conf/config.ini
+      GF_DATA_DIR: /app/grafana/data
+      GF_LOGS_DIR: /app/grafana/logs
+      GF_PLUGINS_DIR: /app/grafana/plugins
+    volumes:
+      - ./pvol:/app
+    container_name: grafana
