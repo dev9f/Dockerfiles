@@ -1,5 +1,16 @@
 version: '2'
 services:
+  haproxy:
+    image: tutum/haproxy
+    links:
+      - influxdb
+    ports:
+      - 8083:8083
+      - 8086:8086
+
+  redis:
+    image: redis
+
   stigma:
     build: ./stigma/.
     image: dev9f/stigma
@@ -55,6 +66,8 @@ services:
     volumes:
       - ./pvol:/app
     #container_name: influxdb
+    links:
+      - redis
 
   grafana:
     build: ./grafana/.
