@@ -1,15 +1,15 @@
 version: '2'
 services:
   haproxy:
-    image: tutum/haproxy
+    image: dockercloud/haproxy
     links:
       - influxdb
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8083:8083
       - 8086:8086
-
-  redis:
-    image: redis
+      - 8088:8088
 
   stigma:
     build: ./stigma/.
@@ -56,18 +56,12 @@ services:
   influxdb:
     build: ./influxdb/.
     image: dev9f/influxdb
-    ports:
-      - 8083
-      - 8086
     environment:
       IFDB_INIT_DB: stigma
       IFDB_INIT_DB_USER_NM: stigma
       IFDB_INIT_DB_USER_PWD: stigma
     volumes:
       - ./pvol:/app
-    #container_name: influxdb
-    links:
-      - redis
 
   grafana:
     build: ./grafana/.

@@ -55,7 +55,7 @@ function write_graphios_command() {
 
 function modify_graphios_config () {
 
-	sed -i 's/enable_influxdb = False/enable_influxdb = True/g' ${GRAPHIOS_HOME}/graphios.cfg
+	sed -i 's/enable_influxdb09 = False/enable_influxdb09 = True/g' ${GRAPHIOS_HOME}/graphios.cfg
 	echo "## InfluxDB Information of Nagios Status Data" >> ${GRAPHIOS_HOME}/graphios.cfg
 	echo "influxdb_servers = $INFLUXDB_PORT_8086_TCP_ADDR:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
 	echo "influxdb_db = $INFLUXDB_ENV_IFDB_INIT_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
