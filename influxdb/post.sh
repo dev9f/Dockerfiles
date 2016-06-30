@@ -1,102 +1,67 @@
 #!/bin/bash
 
-# Dockerfile ENV
-#APP_HOME="/app"
-#WORK="/work"
-
 set -m
 #InfluxDB ENV Check
 : "${IFDB_HOME:=/app/influxdb}"
 : "${IFDB_LOGS_DIR:=/app/influxdb/logs}"
-: "${IFDB_DATA_DIR:=/app/influxdb/data}"
-: "${IFDB_CONF_FILE:=/app/influxdb/conf/config.toml}"
-: "${IFDB_CONF_FILE_REP:=/app/influxdb/conf/config.toml.replace}"
+: "${IFDB_DATA_DIR:=/app/influxdb/influxdb/data}"
+: "${IFDB_CONF_FILE:=/app/influxdb/conf/influxdb.conf}"
 
-
-: "${IFDB_HOST_ADDR:=localhost}"
-: "${IFDB_API_SVC_PORT:=8036}"
 : "${IFDB_API_URL:=http://localhost:8086}"
 
-: "${IFDB_DEFT_PWD:=root}"
 : "${IFDB_INIT_DB:=stigma}"
 : "${IFDB_INIT_DB_USER_NM:=stigma}"
 : "${IFDB_INIT_DB_USER_PWD:=stigma}"
 
-
 function initialize_database() {
-	# Pre create database on the initiation of the container
-	echo "+++++ About to create the following database: ${IFDB_INIT_DB}"
+    # Pre create database on the initiation of the container
+    echo "+++++ About to create the following database: ${IFDB_INIT_DB}"
 
-  start_bg_influxdb
-  arr=$(echo ${IFDB_INIT_DB} | tr ";" "\n")
+    start_bg_influxdb
 
-  echo "+++++ First Configuration Databases"
-  echo "IFDB_INIT_DB_USER_NM : ${IFDB_INIT_DB_USER_NM}"
-  echo "IFDB_INIT_DB_USER_PWD  : ${IFDB_INIT_DB_USER_PWD}"
-  echo "DEFT_INIT_PWD : ${IFDB_DEFT_PWD}"
+    echo "+++++ Creating database users: ${IFDB_INIT_DB_USER_NM}"
+    curl -G ${IFDB_API_URL}/query -u root:root --data-urlencode "q=CREATE USER ${IFDB_INIT_DB_USER_NM} WITH PASSWORD '${IFDB_INIT_DB_USER_PWD}' WITH ALL PRIVILEGES"
 
-  for dbnm in $arr
-  do
-      echo "+++++ Creating database: ${dbnm}"
-      curl -s -k -X POST -d "{\"name\":\"${dbnm}\"}" $(echo ${IFDB_API_URL}'/db?u=root&p='${IFDB_DEFT_PWD})
-      echo "+++++ Creating database users: ${dbnm}"
-      curl -s -k -X POST -d "{\"name\":\"${IFDB_INIT_DB_USER_NM}\",\"password\":\"${IFDB_INIT_DB_USER_PWD}\"}" $(echo ${IFDB_API_URL}'/db/'${dbnm}'/users?u=root&p='${IFDB_DEFT_PWD})
-      echo "+++++ Allow admin : ${dbnm}"
-      curl -s -k -X POST -d "{\"admin\": true}" $(echo ${IFDB_API_URL}'/db/'${dbnm}'/users/'${IFDB_INIT_DB_USER_NM}'?u=root&p='${IFDB_DEFT_PWD})
-  done
-  stop_bg_influxdb
+    echo "+++++ Creating database: ${IFDB_INIT_DB}"
+    curl -G ${IFDB_API_URL}/query -u ${IFDB_INIT_DB_USER_NM}:${IFDB_INIT_DB_USER_PWD} --data-urlencode "q=CREATE DATABASE ${IFDB_INIT_DB}"
+
+    echo "+++++ Writing sample data"
+    curl -i -XPOST ${IFDB_API_URL}/write?db=${IFDB_INIT_DB} -u ${IFDB_INIT_DB_USER_NM}:${IFDB_INIT_DB_USER_PWD} --data-binary 'initialize_database value=0'
+
+    stop_bg_influxdb
 }
-
 
 function start_bg_influxdb() {
-	echo "+++++ Starting InfluxDB Background ..."
-	exec /usr/bin/influxdb -config=${IFDB_CONF_FILE} &
+    echo "+++++ Starting InfluxDB Background ..."
+    exec /opt/influxdb/influxd -config=${IFDB_CONF_FILE} &
 
-	#wait for the startup of influxdb
-  RET=1
-  while [[ RET -ne 0 ]]; do
-  	echo "+++++ Waiting for confirmation of InfluxDB service startup ..."
-  	sleep 3
-  	curl -k ${IFDB_API_URL}/ping 2> /dev/null
-  	RET=$?
-  done
+    #wait for the startup of influxdb
+    RET=1
+    while [[ $RET -ne 0 ]]; do
+        echo "+++++ Waiting for confirmation of InfluxDB service startup ..."
+        sleep 3
+        curl -k ${IFDB_API_URL}/ping 2> /dev/null
+        RET=$?
+    done
 }
 
-
 function stop_bg_influxdb() {
-  echo "+++++ terminate influxdb Background process ..."
+    echo "+++++ terminate influxdb Background process ..."
 
-  PID=`pgrep influxdb`
-  if [[ "" !=  "$PID" ]]; then
-    echo "+++++ killing InfluxDB Process(PID) : $PID"
-    kill -9 $PID
-  fi
+    PID=`pgrep influxd`
+    if [[ "" !=  "$PID" ]]; then
+        echo "+++++ killing InfluxDB Process(PID) : $PID"
+        kill -9 $PID
+    fi
 }
 
 # Replace Influxdb configuration
 function config_replace() {
-	sed -i "s|###IFDB_LOGS_DIR###|${IFDB_LOGS_DIR}|" ${IFDB_CONF_FILE_REP}
-	sed -i "s|###IFDB_DATA_DIR###|${IFDB_DATA_DIR}|" ${IFDB_CONF_FILE_REP}
+    sed -i "s|###IFDB_HOME###|${IFDB_HOME}|" ${IFDB_CONF_FILE}
+    sed -i "s/###IFDB_HOSTNAME###/$HOSTNAME/g" ${IFDB_CONF_FILE}
+    sed -i "s/auth-enabled = false/auth-enabled = true/g" ${IFDB_CONF_FILE}
+    sed -i "s/INFLUXD_OPTS=/INFLUXD_OPTS=\"-join influxdb:8088\"/g" /etc/init.d/influxdb
 }
-
-# Finds the environment variable  and returns its value if found.
-# Otherwise returns the default value if provided.
-#
-# Arguments:
-# $1 env variable name to check
-# $2 default value if environemnt variable was not set
-function find_env() {
-    var=`printenv "$1"`
-
-    # If environment variable exists
-    if [ -n "$var" ]; then
-        echo $var
-    else
-        echo $2
-    fi
-}
-
-
 
 ##################################################################
 
@@ -108,20 +73,17 @@ else
     echo "+++++ InfluxDB directory create and copy config files..."
 
     mkdir -p ${IFDB_HOME}/conf
-    cp ${WORK}/conf/config.toml ${IFDB_CONF_FILE}
-    ##Test
-    cp ${WORK}/conf/config.toml.replace ${IFDB_CONF_FILE_REP}
+    cp ${WORK}/conf/influxdb.conf ${IFDB_CONF_FILE}
     config_replace
 fi
 
 # exist Data File?
-if [ ! -d "$IFDB_HOME/data/db" ]; then
+if [ ! -d "$IFDB_DATA_DIR/$IFDB_INIT_DB" ]; then
     echo "+++++ Initializing Database..."
     initialize_database
 else
     echo "+++++ Database had been created before, skipping ..."
 fi
 
-
 echo "+++++ Starting InfluxDB ..."
-exec /usr/bin/influxdb -config=${IFDB_CONF_FILE}
+exec /opt/influxdb/influxd -config=${IFDB_CONF_FILE}

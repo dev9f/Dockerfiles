@@ -28,7 +28,9 @@ ENV APP_HOME="/app" \
 RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && chown -R suser:suser ${APP_HOME} 
 
 # Install influxdb
-RUN yum -y install https://s3.amazonaws.com/influxdb/influxdb-0.8.8-1.x86_64.rpm && yum clean all
+#RUN yum -y install https://s3.amazonaws.com/influxdb/influxdb-0.8.8-1.x86_64.rpm && yum clean all
+RUN wget -P $WORK https://s3.amazonaws.com/influxdb/influxdb-0.9.3-1.x86_64.rpm && \
+    yum localinstall -y $WORK/influxdb-0.9.3-1.x86_64.rpm
 
 ADD ./post.sh	${WORK}/post.sh
 ADD ./conf ${WORK_CONF}
@@ -37,5 +39,6 @@ RUN chmod 755 ${WORK}/post.sh
 
 EXPOSE 8083
 EXPOSE 8086
+EXPOSE 8088
 
 CMD ["/work/post.sh"]
