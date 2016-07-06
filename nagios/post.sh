@@ -54,20 +54,17 @@ function write_graphios_command() {
 }
 
 function modify_graphios_config () {
-
 	sed -i 's/enable_influxdb09 = False/enable_influxdb09 = True/g' ${GRAPHIOS_HOME}/graphios.cfg
 	echo "## InfluxDB Information of Nagios Status Data" >> ${GRAPHIOS_HOME}/graphios.cfg
 	echo "influxdb_servers = $INFLUXDB_PORT_8086_TCP_ADDR:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
 	echo "influxdb_db = $INFLUXDB_ENV_IFDB_INIT_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
 	echo "influxdb_user = $INFLUXDB_ENV_IFDB_INIT_DB_USER_NM" >> ${GRAPHIOS_HOME}/graphios.cfg
 	echo "influxdb_password = $INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD" >> ${GRAPHIOS_HOME}/graphios.cfg
-
 }
 
 # Nagios home directory check
 
-if [ -e ${NAGIOS_HOME} ]
-then
+if [ -e ${NAGIOS_HOME} ]; then
     echo "${NAGIOS_HOME} already exists."
 else
     echo "${NAGIOS_HOME} does not exists."
@@ -86,8 +83,7 @@ else
 fi
 
 #Creating a password for nagiosadmin
-if [ -e ${NAGIOS_HOME}/etc/htpasswd.users ]
-then
+if [ -e ${NAGIOS_HOME}/etc/htpasswd.users ]; then
     echo "htpasswd.users already exists."
 else
     echo "htpasswd.users does not exists."
@@ -96,12 +92,16 @@ fi
 
 
  ## Graphios Start
-if [ "${GRAPHIOS_USED}" = "y" ]
-then
-    backup_config
-    setup_graphios
-    modify_graphios_config
-    nohup  ${GRAPHIOS_HOME}/graphios.py -v --backend=influxdb --config_file=${GRAPHIOS_HOME}/graphios.cfg 1> /dev/null 2>&1 & 
+if [ "${GRAPHIOS_USED}" = "y" ]; then
+    if grep -q '## Graphios Command' ${NAGIOS_HOME}/etc/nagios.cfg; then
+        echo "config already exists."
+    else
+        echo "config does not exists."
+        backup_config
+        setup_graphios
+        modify_graphios_config
+    fi
+    nohup  ${GRAPHIOS_HOME}/graphios.py -v --backend=influxdb09 --config_file=${GRAPHIOS_HOME}/graphios.cfg 1> /dev/null 2>&1 & 
 fi
 
 
