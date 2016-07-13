@@ -336,8 +336,142 @@ def init_backends():
     log.info("Enabled backends: %s" % be["enabled_backends"].keys())
 
 
+def process_spool_dir(directory):
+    """
+    processes the files in the spool directory
+    """
+    global be
+    log.debug("Processing spool directory %s", directory)
+    num_files = 0
+    mobjs_len = 0
+    try:
+        perfdata_files = os.listdir(directory)
+    except (IOError, OSError) as e:
+        print "Exception '%s' reading spool directory: %s" % (e, directory)
+        print "Check if dir exists, or file permissions."
+        print "Exiting."
+        sys.exit(1)
+    for perfdata_file in perfdata_files:
+        mobjs = []
+        processed_dict = {}
+        all_done = True
+        file_dir = os.path.join(directory, perfdata_file)
+        if check_skip_file(perfdata_file, file_dir):
+            continue
+        num_files += 1
+        mobjs = process_log(file_dir)
+        mobjs_len = len(mobjs)
+        processed_dict = send_backends(mobjs)
+        # process the output from the backends and decide the fate of the file
+        for backend in be["essential_backends"]:
+            if processed_dict[backend] < mobjs_len:
+                log.critical("keeping %s, insufficent metrics sent from %s. \
+                             Should be %s, got %s" % (file_dir, backend,
+                                                      mobjs_len,
+                                                      processed_dict[backend]))
+                all_done = False
+        if all_done is True:
+            handle_file(file_dir, len(mobjs))
+    log.info("Processed %s files (%s metrics) in %s" % (num_files,
+             mobjs_len, directory))
+
+
+def process_log(file_name):
+    """ process log lines into GraphiosMetric Objects.
+    input is a tab delimited series of key/values each of which are delimited
+    by '::' it looks like:
+    DATATYPE::HOSTPERFDATA  TIMET::1399738074 etc..
+    """
+    processed_objects = []  # the final list of metric objects we'll return
+    graphite_lines = 0  # count the number of valid lines we process
+    try:
+        host_data_file = open(file_name, "r")
+        file_array = host_data_file.readlines()
+        host_data_file.close()
+    except (IOError, OSError) as ex:
+        log.critical("Can't open file:%s error: %s" % (file_name, ex))
+        sys.exit(2)
+    # parse each line into a metric object
+    for line in file_array:
+        if not re.search("^DATATYPE::", line):
+            continue
+        # log.debug('parsing: %s' % line)
+        graphite_lines += 1
+        variables = line.split('\t')
+        mobj = get_mobj(variables)
+        if mobj:
+            # break out the metric object into one object per perfdata metric
+            # log.debug('perfdata:%s' % mobj.PERFDATA)
+            for metric in mobj.PERFDATA.split():
+                try:
+                    nobj = copy.copy(mobj)
+                    (nobj.LABEL, d) = metric.split('=')
+                    v = d.split(';')[0]
+                    u = v
+                    nobj.VALUE = re.sub("[a-zA-Z%]", "", v)
+                    nobj.UOM = re.sub("[^a-zA-Z]+", "", u)
+                    processed_objects.append(nobj)
+                except:
+                    log.critical("failed to parse label: '%s' part of perf"
+                                 "string '%s'" % (metric, nobj.PERFDATA))
+                    continue
+    return processed_objects
+
+
+def get_mobj(nag_array):
+    """
+        takes a split array of nagios variables and returns a mobj if it's
+        valid. otherwise return False.
+    """
+    mobj = GraphiosMetric()
+    for var in nag_array:
+        # drop the metric if we can't split it for any reason
+        try:
+            (var_name, value) = var.split('::', 1)
+        except:
+            log.warn("could not split value %s, dropping metric" % var)
+            return False
+
+        value = re.sub("/", cfg["replacement_character"], value)
+        if re.search("PERFDATA", var_name):
+            mobj.PERFDATA = value
+        elif re.search("^\$_", value):
+            continue
+        else:
+            value = re.sub("\s", "", value)
+            setattr(mobj, var_name, value)
+    mobj.validate()
+    if mobj.VALID is True:
+        return mobj
+    return False
+
+
+def send_backends(metrics):
+    """
+    use the enabled_backends dict to call into the backend send functions
+    """
+    global be
+    if len(be["enabled_backends"]) < 1:
+        log.critical("At least one Back-end must be enabled in granati.cfg")
+        sys.exit(1)
+    ret = {}  # return a dict of who processed what
+    processed_lines = 0
+    for backend in be["enabled_backends"]:
+        processed_lines = be["enabled_backends"][backend].send(metrics)
+        # log.debug('%s processed %s metrics' % backend, processed_lines)
+        ret[backend] = processed_lines
+    return ret
+
+
 def main():
-    print("Hello World")
+    log.info("granati startup.")
+    try:
+        while True:
+            process_spool_dir(spool_directory)
+            log.debug("granati sleeping.")
+            time.sleep(float(cfg["sleep_time"]))
+    except KeyboardInterrupt:
+        log.info("ctrl-c pressed. Exiting granati.")
 
 
 if __name__ == "__main__":
