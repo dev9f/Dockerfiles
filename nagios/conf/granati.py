@@ -196,6 +196,43 @@ def handle_backends(opts):
         print "Use graphios.cfg for librato."
         sys.exit(1)
 
+def configure():
+    """
+    sets up graphios config
+    """
+    global debug
+    try:
+        cfg["log_max_size"] = int(cfg["log_max_size"])
+    except ValueError:
+        print "log_max_size needs to be a integer"
+        sys.exit(1)
+
+    # Convert cfg["log_max_size"] to bytes. Assume its already in bytes
+    # if its > 1000000
+    if cfg["log_max_size"] < 1000000:
+        log_max_bytes = cfg["log_max_size"]*1024*1024
+    else:
+        log_max_bytes = cfg["log_max_size"]
+
+    log_handler = logging.handlers.RotatingFileHandler(
+        cfg["log_file"], maxBytes=log_max_bytes, backupCount=4,
+        # encoding='bz2')
+    )
+    formatter = logging.Formatter(
+        "%(asctime)s %(filename)s %(levelname)s %(message)s",
+        "%B %d %H:%M:%S")
+    log_handler.setFormatter(formatter)
+    log.addHandler(log_handler)
+
+    if cfg.get("debug") is True or cfg['log_level'] == 'logging.DEBUG':
+        log.debug("adding streamhandler")
+        log.setLevel(logging.DEBUG)
+        log.addHandler(logging.StreamHandler())
+        debug = True
+    else:
+        log.setLevel(loglevels[cfg['log_level']])
+        debug = False
+
 def main():
     print("Hello World")
 
@@ -209,4 +246,5 @@ if __name__ == "__main__":
     else:
         cfg = read_config(config_file)
     verify_config(cfg)
+    configure()
     main()
