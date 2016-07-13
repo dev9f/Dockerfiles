@@ -5,6 +5,7 @@
 from ConfigParser import SafeConfigParser
 from optparse import OptionParser
 import logging
+import logging.handlers
 import os
 import os.path
 import sys
@@ -182,18 +183,10 @@ def verify_options(opts):
 
 def handle_backends(opts):
     global cfg
-    if opts.backend == "carbon" or opts.backend == "statsd":
-        if not opts.server:
-            print "Must also have --server for carbon or statsd."
-            sys.exit(1)
-        if opts.backend == "carbon":
-            cfg["enable_carbon"] = True
-            cfg["carbon_servers"] = opts.server
-        if opts.backend == "statsd":
-            cfg["enable_statsd"] = True
-            cfg["statsd_server"] = opts.server
-    if opts.backend == "librato":
-        print "Use graphios.cfg for librato."
+    if opts.backend == "influxdb":
+        cfg["enable_influxdb"] = True
+    else:
+        print opts.backend + " is preparing."
         sys.exit(1)
 
 def configure():
