@@ -2,8 +2,11 @@
 # vim: set ts=4 sts=4 sw=4 tw=79 et :
 # Provenance: https://github.com/shawn-sterling/graphios/graphios.py
 
+from ConfigParser import SafeConfigParser
 from optparse import OptionParser
 import logging
+import os
+import os.path
 import sys
 
 # ##########################################################
@@ -76,25 +79,30 @@ parser.add_option("--reverse_hostname", action="store_true",
                   dest="reverse_hostname",
                   help="Reverse nagios hostname, default off.")
 
+
+def print_debug(msg):
+    """
+    prints a debug message if global debug is True
+    """
+    if debug:
+        print msg
+
 def read_config(config_file):
     """
     reads the config file
     """
     if config_file == '':
-        # check same dir as graphios binary
-        my_file = "%s/graphios.cfg" % sys.path[0]
+        # check same dir as granati binary
+        my_file = "%s/granati.cfg" % sys.path[0]
         if os.path.isfile(my_file):
             config_file = my_file
-        else:
-            # check /etc/graphios/graphios.cfg
-            config_file = "/etc/graphios/graphios.cfg"
     config = SafeConfigParser()
     # The logger won't be initialized yet, so we use print_debug
     if os.path.isfile(config_file):
         config.read(config_file)
         config_dict = {}
         for section in config.sections():
-            # there should only be 1 'graphios' section
+            # there should only be 1 'granati' section
             print_debug("section: %s" % section)
             config_dict['name'] = section
             for name, value in config.items(section):
@@ -106,7 +114,7 @@ def read_config(config_file):
         print_debug("Can't open config file: %s" % config_file)
         print """\nEither modify the script at the config_file = '' line and
 specify where you want your config file to be, or create a config file
-in the above directory (which should be the same dir the graphios.py is in)
+in the above directory (which should be the same dir the granati.py is in)
 or you can specify --config=myconfigfilelocation at the command line."""
         sys.exit(1)
 
@@ -147,7 +155,7 @@ def verify_options(opts):
     if "log_file" not in cfg:
         cfg["log_file"] = opts.log_file
     if cfg["log_file"] == "''" or cfg["log_file"] == "":
-        cfg["log_file"] = "%s/graphios.log" % sys.path[0]
+        cfg["log_file"] = "%s/granati.log" % sys.path[0]
     cfg["log_max_size"] = 24
     if opts.verbose:
         cfg["debug"] = True
@@ -169,10 +177,24 @@ def verify_options(opts):
     cfg["replace_hostname"] = opts.replace_hostname
     cfg["reverse_hostname"] = opts.reverse_hostname
     spool_directory = opts.spool_directory
-    # cfg["backend"] = opts.backend
     handle_backends(opts)
-    # cfg["enable_carbon"] = True
     return cfg
+
+def handle_backends(opts):
+    global cfg
+    if opts.backend == "carbon" or opts.backend == "statsd":
+        if not opts.server:
+            print "Must also have --server for carbon or statsd."
+            sys.exit(1)
+        if opts.backend == "carbon":
+            cfg["enable_carbon"] = True
+            cfg["carbon_servers"] = opts.server
+        if opts.backend == "statsd":
+            cfg["enable_statsd"] = True
+            cfg["statsd_server"] = opts.server
+    if opts.backend == "librato":
+        print "Use graphios.cfg for librato."
+        sys.exit(1)
 
 def main():
     print("Hello World")
@@ -186,4 +208,5 @@ if __name__ == "__main__":
             cfg = verify_options(options)
     else:
         cfg = read_config(config_file)
+    verify_config(cfg)
     main()
