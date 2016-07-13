@@ -76,11 +76,114 @@ parser.add_option("--reverse_hostname", action="store_true",
                   dest="reverse_hostname",
                   help="Reverse nagios hostname, default off.")
 
+def read_config(config_file):
+    """
+    reads the config file
+    """
+    if config_file == '':
+        # check same dir as graphios binary
+        my_file = "%s/graphios.cfg" % sys.path[0]
+        if os.path.isfile(my_file):
+            config_file = my_file
+        else:
+            # check /etc/graphios/graphios.cfg
+            config_file = "/etc/graphios/graphios.cfg"
+    config = SafeConfigParser()
+    # The logger won't be initialized yet, so we use print_debug
+    if os.path.isfile(config_file):
+        config.read(config_file)
+        config_dict = {}
+        for section in config.sections():
+            # there should only be 1 'graphios' section
+            print_debug("section: %s" % section)
+            config_dict['name'] = section
+            for name, value in config.items(section):
+                config_dict[name] = chk_bool(value)
+                print_debug("config[%s]=%s" % (name, value))
+        # print config_dict
+        return config_dict
+    else:
+        print_debug("Can't open config file: %s" % config_file)
+        print """\nEither modify the script at the config_file = '' line and
+specify where you want your config file to be, or create a config file
+in the above directory (which should be the same dir the graphios.py is in)
+or you can specify --config=myconfigfilelocation at the command line."""
+        sys.exit(1)
+
+
+def verify_config(config_dict):
+    """
+    verifies the required config variables are found
+    """
+    global spool_directory
+    ensure_list = ['replacement_character', 'log_file', 'log_max_size',
+                   'log_level', 'sleep_time', 'sleep_max', 'test_mode',
+                   'reverse_hostname', 'replace_hostname']
+    missing_values = []
+    for ensure in ensure_list:
+        if ensure not in config_dict:
+            missing_values.append(ensure)
+    if len(missing_values) > 0:
+        print "\nMust have value in config file for:\n"
+        for value in missing_values:
+            print "%s\n" % value
+        sys.exit(1)
+    if not config_dict['log_level'] in loglevels.keys():
+        print "Unknown loglevel: " + config_dict['log_level'] + '\n'
+        print "Available loglevels:"
+        print '\n'.join(sorted(loglevels.keys()))
+        sys.exit(1)
+    if "spool_directory" in config_dict:
+        spool_directory = config_dict['spool_directory']
+
+def verify_options(opts):
+    """
+    verify the passed command line options, puts into global cfg
+    """
+    global cfg
+    global spool_directory
+    # because these have defaults in the parser section we know they will be
+    # set. So we don't have to do a bunch of ifs.
+    if "log_file" not in cfg:
+        cfg["log_file"] = opts.log_file
+    if cfg["log_file"] == "''" or cfg["log_file"] == "":
+        cfg["log_file"] = "%s/graphios.log" % sys.path[0]
+    cfg["log_max_size"] = 24
+    if opts.verbose:
+        cfg["debug"] = True
+        cfg["log_level"] = "logging.DEBUG"
+    elif opts.quiet:
+        cfg["debug"] = False
+        cfg["log_level"] = "logging.WARNING"
+    else:
+        cfg["debug"] = False
+        cfg["log_level"] = "logging.INFO"
+    if opts.test:
+        cfg["test_mode"] = True
+    else:
+        cfg["test_mode"] = False
+    cfg["replacement_character"] = opts.replace_char
+    cfg["spool_directory"] = opts.spool_directory
+    cfg["sleep_time"] = opts.sleep_time
+    cfg["sleep_max"] = opts.sleep_max
+    cfg["replace_hostname"] = opts.replace_hostname
+    cfg["reverse_hostname"] = opts.reverse_hostname
+    spool_directory = opts.spool_directory
+    # cfg["backend"] = opts.backend
+    handle_backends(opts)
+    # cfg["enable_carbon"] = True
+    return cfg
+
 def main():
     print("Hello World")
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         (options, args) = parser.parse_args()
-        print options
+        if options.config_file:
+            cfg = read_config(options.config_file)
+        else:
+            cfg = verify_options(options)
+    else:
+        cfg = read_config(config_file)
     main()
