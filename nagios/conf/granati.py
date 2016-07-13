@@ -397,6 +397,21 @@ def check_skip_file(file_name, file_dir):
     return False
 
 
+def handle_file(file_name, graphite_lines):
+    """
+    archive processed metric lines and delete the input log files
+    """
+    if "test_mode" in cfg and cfg["test_mode"] is True:
+        log.debug("graphite_lines:%s" % graphite_lines)
+    else:
+        try:
+            os.remove(file_name)
+        except (OSError, IOError) as ex:
+            log.critical("couldn't remove file %s error:%s" % (file_name, ex))
+        else:
+            log.debug("deleted %s" % file_name)
+
+
 def process_log(file_name):
     """ process log lines into GraphiosMetric Objects.
     input is a tab delimited series of key/values each of which are delimited
