@@ -85,6 +85,67 @@ parser.add_option("--reverse_hostname", action="store_true",
                   help="Reverse nagios hostname, default off.")
 
 
+class GraphiosMetric(object):
+    def __init__(self):
+        self.LABEL = ''                 # The name in the perfdata from nagios
+        self.VALUE = ''                 # The measured value of that metric
+        self.UOM = ''                   # The unit of measure for the metric
+        self.DATATYPE = ''              # HOSTPERFDATA|SERVICEPERFDATA
+        self.METRICTYPE = 'gauge'       # gauge|counter|timer etc..
+        self.TIMET = ''                 # Epoc time the measurement was taken
+        self.HOSTNAME = ''              # name of th host measured
+        self.SERVICEDESC = ''           # nagios configured service description
+        self.PERFDATA = ''              # the space-delimited raw perfdata
+        self.SERVICECHECKCOMMAND = ''   # literal check command syntax
+        self.HOSTCHECKCOMMAND = ''      # literal check command syntax
+        self.HOSTSTATE = ''             # current state afa nagios is concerned
+        self.HOSTSTATETYPE = ''         # HARD|SOFT
+        self.SERVICESTATE = ''          # current state afa nagios is concerned
+        self.SERVICESTATETYPE = ''      # HARD|SOFT
+        self.METRICBASEPATH = ''        # Establishes a root base path
+        self.GRAPHITEPREFIX = ''        # graphios prefix
+        self.GRAPHITEPOSTFIX = ''       # graphios suffix
+        self.VALID = False              # if this metric is valid
+
+        if 'metric_base_path' in cfg:
+            self.METRICBASEPATH = cfg['metric_base_path']
+
+    def validate(self):
+        # because we eliminated all whitespace, there shouldn't be any quotes
+        # this happens more with windows nagios plugins
+        re.sub("'", "", self.LABEL)
+        re.sub('"', "", self.LABEL)
+        re.sub("'", "", self.VALUE)
+        re.sub('"', "", self.VALUE)
+        self.check_adjust_hostname()
+        if (
+            self.TIMET is not '' and
+            self.PERFDATA is not '' and
+            self.HOSTNAME is not ''
+        ):
+            if "use_service_desc" in cfg and cfg["use_service_desc"] is True:
+                if self.SERVICEDESC != '' or self.DATATYPE == 'HOSTPERFDATA':
+                    self.VALID = True
+            else:
+                # not using service descriptions
+                if (
+                    # We should keep this logic and not check for a
+                    # base path here. Just because there's a base path
+                    # doesn't mean the metric should be considered valid
+                    self.GRAPHITEPREFIX == "" and
+                    self.GRAPHITEPOSTFIX == ""
+                ):
+                    self.VALID = False
+                else:
+                    self.VALID = True
+
+    def check_adjust_hostname(self):
+        if cfg["reverse_hostname"]:
+            self.HOSTNAME = '.'.join(reversed(self.HOSTNAME.split('.')))
+        if cfg["replace_hostname"]:
+            self.HOSTNAME = self.HOSTNAME.replace(".",
+                                                  cfg["replacement_character"])
+
 def print_debug(msg):
     """
     prints a debug message if global debug is True
