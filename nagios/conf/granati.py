@@ -376,6 +376,27 @@ def process_spool_dir(directory):
              mobjs_len, directory))
 
 
+def check_skip_file(file_name, file_dir):
+    """
+    checks if file should be skipped
+    """
+    if (
+        file_name == "host-perfdata" or
+        file_name == "service-perfdata"
+    ):
+        return True
+    elif re.match('^_', file_name):
+        return True
+
+    if os.stat(file_dir)[6] == 0:
+        # file was 0 bytes
+        handle_file(file_dir, 0)
+        return True
+    if os.path.isdir(file_dir):
+        return True
+    return False
+
+
 def process_log(file_name):
     """ process log lines into GraphiosMetric Objects.
     input is a tab delimited series of key/values each of which are delimited
