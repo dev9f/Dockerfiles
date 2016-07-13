@@ -146,6 +146,7 @@ class GraphiosMetric(object):
             self.HOSTNAME = self.HOSTNAME.replace(".",
                                                   cfg["replacement_character"])
 
+
 def chk_bool(value):
     """
     checks if value is a stringified boolean
@@ -156,12 +157,14 @@ def chk_bool(value):
         return False
     return value
 
+
 def print_debug(msg):
     """
     prints a debug message if global debug is True
     """
     if debug:
         print msg
+
 
 def read_config(config_file):
     """
@@ -220,6 +223,7 @@ def verify_config(config_dict):
     if "spool_directory" in config_dict:
         spool_directory = config_dict['spool_directory']
 
+
 def verify_options(opts):
     """
     verify the passed command line options, puts into global cfg
@@ -256,6 +260,7 @@ def verify_options(opts):
     handle_backends(opts)
     return cfg
 
+
 def handle_backends(opts):
     global cfg
     if opts.backend == "influxdb":
@@ -263,6 +268,7 @@ def handle_backends(opts):
     else:
         print opts.backend + " is preparing."
         sys.exit(1)
+
 
 def configure():
     """
@@ -301,6 +307,7 @@ def configure():
         log.setLevel(loglevels[cfg['log_level']])
         debug = False
 
+
 def init_backends():
     """
     build a global dict of enabled back-ends
@@ -328,8 +335,10 @@ def init_backends():
                 be["essential_backends"].append(backend)
     log.info("Enabled backends: %s" % be["enabled_backends"].keys())
 
+
 def main():
     print("Hello World")
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
