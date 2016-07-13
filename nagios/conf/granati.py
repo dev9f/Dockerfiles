@@ -146,6 +146,16 @@ class GraphiosMetric(object):
             self.HOSTNAME = self.HOSTNAME.replace(".",
                                                   cfg["replacement_character"])
 
+def chk_bool(value):
+    """
+    checks if value is a stringified boolean
+    """
+    if (value.lower() == "true"):
+        return True
+    elif (value.lower() == "false"):
+        return False
+    return value
+
 def print_debug(msg):
     """
     prints a debug message if global debug is True
