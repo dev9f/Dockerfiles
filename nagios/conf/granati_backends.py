@@ -9,7 +9,7 @@ import json
 # ###########################################################
 # #### influxdb backend  ####################################
 
-class influxdb(object):
+class influxdb08(object):
     def __init__(self, cfg):
         self.log = logging.getLogger("log.backends.influxdb")
         self.log.info("InfluxDB backend initialized")
@@ -163,7 +163,7 @@ class influxdb(object):
 # ###########################################################
 # #### influxdb-0.9 backend  ####################################
 
-class influxdb09(influxdb):
+class influxdb(influxdb08):
     def __init__(self, cfg):
         influxdb.__init__(self, cfg)
         if 'influxdb_extra_tags' in cfg:
