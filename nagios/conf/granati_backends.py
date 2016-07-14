@@ -165,7 +165,7 @@ class influxdb08(object):
 
 class influxdb(influxdb08):
     def __init__(self, cfg):
-        influxdb.__init__(self, cfg)
+        influxdb08.__init__(self, cfg)
         if 'influxdb_extra_tags' in cfg:
             self.influxdb_extra_tags = ast.literal_eval(
                 cfg['influxdb_extra_tags'])
@@ -201,7 +201,7 @@ class influxdb(influxdb08):
             req.add_header('Content-Type', 'application/x-www-form-urlencoded')
             return req
         else:
-            return super(influxdb09, self).url_request(url, chunk)
+            return super(influxdb, self).url_request(url, chunk)
 
     def format_metric(self, timestamp, path, tags, value):
         if not self.influxdb_line_protocol:
