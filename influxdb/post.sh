@@ -35,7 +35,7 @@ function initialize_database() {
 
 function start_bg_influxdb() {
     echo "+++++ Starting InfluxDB Background ..."
-    exec /opt/influxdb/influxd -config=${IFDB_CONF_FILE} &
+    exec /usr/bin/influxd &
 
     #wait for the startup of influxdb
     RET=1
@@ -58,26 +58,26 @@ function stop_bg_influxdb() {
 }
 
 # Replace Influxdb configuration
-function config_replace() {
-    sed -i "s|###IFDB_HOME###|${IFDB_HOME}|" ${IFDB_CONF_FILE}
-    sed -i "s/###IFDB_HOSTNAME###/$HOSTNAME/g" ${IFDB_CONF_FILE}
-    #sed -i "s/auth-enabled = false/auth-enabled = true/g" ${IFDB_CONF_FILE}
-    sed -i "s/INFLUXD_OPTS=/INFLUXD_OPTS=\"-join influxdb:8088\"/g" /etc/init.d/influxdb
-}
+# function config_replace() {
+#     sed -i "s|###IFDB_HOME###|${IFDB_HOME}|" ${IFDB_CONF_FILE}
+#     sed -i "s/###IFDB_HOSTNAME###/$HOSTNAME/g" ${IFDB_CONF_FILE}
+#     #sed -i "s/auth-enabled = false/auth-enabled = true/g" ${IFDB_CONF_FILE}
+#     sed -i "s/INFLUXD_OPTS=/INFLUXD_OPTS=\"-join influxdb:8088\"/g" /etc/init.d/influxdb
+# }
 
 ##################################################################
 
 ## Extract/Init InfluxDB if it does not exists
-if [ -e ${IFDB_HOME} ]; then
-    echo "+++++ ${IFDB_HOME} already exists ..."
-else
-    echo "+++++ ${IFDB_HOME} does not exists ..."
-    echo "+++++ InfluxDB directory create and copy config files..."
+# if [ -e ${IFDB_HOME} ]; then
+#     echo "+++++ ${IFDB_HOME} already exists ..."
+# else
+#     echo "+++++ ${IFDB_HOME} does not exists ..."
+#     echo "+++++ InfluxDB directory create and copy config files..."
 
-    mkdir -p ${IFDB_HOME}/conf
-    cp ${WORK}/conf/influxdb.conf ${IFDB_CONF_FILE}
-    config_replace
-fi
+#     mkdir -p ${IFDB_HOME}/conf
+#     cp ${WORK}/conf/influxdb.conf ${IFDB_CONF_FILE}
+#     config_replace
+# fi
 
 # exist Data File?
 if [ ! -d "$IFDB_DATA_DIR/$IFDB_INIT_DB" ]; then
@@ -88,4 +88,4 @@ else
 fi
 
 echo "+++++ Starting InfluxDB ..."
-exec /opt/influxdb/influxd -config=${IFDB_CONF_FILE}
+exec /usr/bin/influxd
