@@ -20,46 +20,46 @@ set -m
 
 
 function backup_config () {
-	cp ${NAGIOS_HOME}/etc/nagios.cfg ${NAGIOS_HOME}/etc/nagios.cfg.org
-	cp ${GRAPHIOS_HOME}/graphios.cfg ${GRAPHIOS_HOME}/graphios.cfg.org
+    cp ${NAGIOS_HOME}/etc/nagios.cfg ${NAGIOS_HOME}/etc/nagios.cfg.org
+    cp ${GRAPHIOS_HOME}/graphios.cfg ${GRAPHIOS_HOME}/graphios.cfg.org
 }
 
 function setup_graphios () {
-	echo "##### setup_graphios #####"
+    echo "##### setup_graphios #####"
 
-	mkdir -p ${GRAPHIOS_HOME}/logs
-	mkdir -p ${GRAPHIOS_SPOOL}
-	chown -R nagios:nagcmd ${GRAPHIOS_SPOOL}
-	chmod 755 ${GRAPHIOS_SPOOL}
+    mkdir -p ${GRAPHIOS_HOME}/logs
+    mkdir -p ${GRAPHIOS_SPOOL}
+    chown -R nagios:nagcmd ${GRAPHIOS_SPOOL}
+    chmod 755 ${GRAPHIOS_SPOOL}
 
-	write_graphios_perf_templ
-	write_graphios_command
+    write_graphios_perf_templ
+    write_graphios_command
 
-	cat ${NAGIOS_CONF}/localhost.cfg > ${NAGIOS_HOME}/etc/objects/localhost.cfg
-	sed -i "s|###PREFIX_LOCALHOST###|${PREFIX_LOCALHOST}|g" ${NAGIOS_HOME}/etc/objects/localhost.cfg
-	sed -i "s|\/usr\/local\/nagios\/var\/graphios.log|${GRAPHIOS_HOME}\/logs\/graphios.log|g" ${GRAPHIOS_HOME}/graphios.cfg
+    cat ${NAGIOS_CONF}/localhost.cfg > ${NAGIOS_HOME}/etc/objects/localhost.cfg
+    sed -i "s|###PREFIX_LOCALHOST###|${PREFIX_LOCALHOST}|g" ${NAGIOS_HOME}/etc/objects/localhost.cfg
+    sed -i "s|\/usr\/local\/nagios\/var\/graphios.log|${GRAPHIOS_HOME}\/logs\/graphios.log|g" ${GRAPHIOS_HOME}/graphios.cfg
 }
 
 function write_graphios_perf_templ() {
-	cat ${NAGIOS_CONF}/graphios_commands.txt >> ${NAGIOS_HOME}/etc/nagios.cfg
-	sed -i 's/process_performance_data=0/process_performance_data=1/g' ${NAGIOS_HOME}/etc/nagios.cfg
-	sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_HOME}/etc/nagios.cfg
+    cat ${NAGIOS_CONF}/graphios_commands.txt >> ${NAGIOS_HOME}/etc/nagios.cfg
+    sed -i 's/process_performance_data=0/process_performance_data=1/g' ${NAGIOS_HOME}/etc/nagios.cfg
+    sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_HOME}/etc/nagios.cfg
 }
 
 function write_graphios_command() {
-	echo "## Graphios Command" >> ${NAGIOS_HOME}/etc/nagios.cfg
-	echo "cfg_file=${NAGIOS_HOME}/etc/objects/graphios_commands.cfg" >> ${NAGIOS_HOME}/etc/nagios.cfg
-	cp ${NAGIOS_CONF}/graphios_commands.cfg ${NAGIOS_HOME}/etc/objects/
-	sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_HOME}/etc/objects/graphios_commands.cfg
+    echo "## Graphios Command" >> ${NAGIOS_HOME}/etc/nagios.cfg
+    echo "cfg_file=${NAGIOS_HOME}/etc/objects/graphios_commands.cfg" >> ${NAGIOS_HOME}/etc/nagios.cfg
+    cp ${NAGIOS_CONF}/graphios_commands.cfg ${NAGIOS_HOME}/etc/objects/
+    sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_HOME}/etc/objects/graphios_commands.cfg
 }
 
 function modify_graphios_config () {
-	sed -i 's/enable_influxdb09 = False/enable_influxdb09 = True/g' ${GRAPHIOS_HOME}/graphios.cfg
-	echo "## InfluxDB Information of Nagios Status Data" >> ${GRAPHIOS_HOME}/graphios.cfg
-	echo "influxdb_servers = $INFLUXDB_PORT_8086_TCP_ADDR:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
-	echo "influxdb_db = $INFLUXDB_ENV_IFDB_INIT_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
-	echo "influxdb_user = $INFLUXDB_ENV_IFDB_INIT_DB_USER_NM" >> ${GRAPHIOS_HOME}/graphios.cfg
-	echo "influxdb_password = $INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD" >> ${GRAPHIOS_HOME}/graphios.cfg
+    sed -i 's/enable_influxdb09 = False/enable_influxdb09 = True/g' ${GRAPHIOS_HOME}/graphios.cfg
+    echo "## InfluxDB Information of Nagios Status Data" >> ${GRAPHIOS_HOME}/graphios.cfg
+    echo "influxdb_servers = $INFLUXDB_PORT_8086_TCP_ADDR:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
+    echo "influxdb_db = $INFLUXDB_ENV_IFDB_INIT_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
+    echo "influxdb_user = $INFLUXDB_ENV_IFDB_INIT_DB_USER_NM" >> ${GRAPHIOS_HOME}/graphios.cfg
+    echo "influxdb_password = $INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD" >> ${GRAPHIOS_HOME}/graphios.cfg
 }
 
 # Nagios home directory check
