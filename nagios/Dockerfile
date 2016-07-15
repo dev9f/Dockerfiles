@@ -32,7 +32,7 @@ ENV APP_HOME="/app" \
 
 
 # Make default directory
-RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && chown -R suser:suser ${APP_HOME}
+RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME} && chown -R suser:suser ${APP_HOME}
 
 # install Prerequisites
 RUN yum install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip -y
