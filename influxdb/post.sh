@@ -19,16 +19,11 @@ function initialize_database() {
 
     start_bg_influxdb
 
-    #echo "+++++ Creating database users: ${IFDB_INIT_DB_USER_NM}"
-    #curl -G ${IFDB_API_URL}/query -u root:root --data-urlencode "q=CREATE USER ${IFDB_INIT_DB_USER_NM} WITH PASSWORD '${IFDB_INIT_DB_USER_PWD}' WITH ALL PRIVILEGES"
-
     echo "+++++ Creating database: ${IFDB_INIT_DB}"
-    curl -G ${IFDB_API_URL}/query --data-urlencode "q=CREATE DATABASE ${IFDB_INIT_DB}"
-    #curl -G ${IFDB_API_URL}/query -u ${IFDB_INIT_DB_USER_NM}:${IFDB_INIT_DB_USER_PWD} --data-urlencode "q=CREATE DATABASE ${IFDB_INIT_DB}"
+    curl -POST ${IFDB_API_URL}/query --data-urlencode "q=CREATE DATABASE ${IFDB_INIT_DB}"
 
     echo "+++++ Writing sample data"
     curl -i -XPOST ${IFDB_API_URL}/write?db=${IFDB_INIT_DB} --data-binary 'initialize_database value=0'
-    #curl -i -XPOST ${IFDB_API_URL}/write?db=${IFDB_INIT_DB} -u ${IFDB_INIT_DB_USER_NM}:${IFDB_INIT_DB_USER_PWD} --data-binary 'initialize_database value=0'
 
     stop_bg_influxdb
 }
