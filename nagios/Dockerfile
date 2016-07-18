@@ -4,8 +4,8 @@ MAINTAINER heeminChae / version: 1.0
 
 # Add Default User Account : suser / Change Password : root, suser
 RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
-        echo "suser:S2curity" | chpasswd && \
-        echo "root:S2crity" | chpasswd
+    echo "suser:S2curity" | chpasswd && \
+    echo "root:S2crity" | chpasswd
 
 # Install default package
 RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo 
@@ -16,7 +16,7 @@ RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 
 # TimeZone Change : KST
 RUN mv /etc/localtime /etc/localtime.bak && \
-        ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+    ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 # Set Env
 ENV APP_HOME="/app" \
@@ -40,18 +40,22 @@ RUN yum install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp op
 # Create user and group for Nagios to use
 RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
 
+# install Node.js v4 LTS Argon
+RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
+    yum -y install nodejs
+
 ### For nagios-dev ##################################
-# Install SW Packages
-RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm && \
-    yum-config-manager --enable remi-php56,remi
+# # Install SW Packages
+# RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm && \
+#     yum-config-manager --enable remi-php56,remi
 
-# Install Apache, PHP
-RUN yum -y install php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm
+# # Install Apache, PHP
+# RUN yum -y install php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer && \
-    chmod +x /usr/local/bin/composer
+# # Install Composer
+# RUN curl -sS https://getcomposer.org/installer | php && \
+#     mv composer.phar /usr/local/bin/composer && \
+#     chmod +x /usr/local/bin/composer
 ### For nagios-dev ##################################
 
 
@@ -59,6 +63,7 @@ RUN curl -sS https://getcomposer.org/installer | php && \
 ADD ./post.sh  ${WORK}/post.sh
 ADD ./init ${WORK}/init
 ADD ./conf ${WORK}/conf
+ADD ./api ${WORK}/api
 
 # Permission Update
 RUN chmod 755 ${NAGIOS_INIT}/nagiosInstall.sh ${NAGIOS_INIT}/nagiosPlug.sh ${NAGIOS_INIT}/nrpe.sh ${NAGIOS_INIT}/graphios.sh ${WORK}/post.sh
@@ -81,5 +86,6 @@ RUN ${NAGIOS_INIT}/graphios.sh
 RUN cd ${WORK} && tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && rm -rf ${NAGIOS_HOME}
 
 EXPOSE 80
+EXPOSE 8888
 
 CMD ["/work/post.sh"]
