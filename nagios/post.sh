@@ -5,7 +5,8 @@
 set -m
 : "${APP_HOME:=/app}"
 : "${WORK:=/work}"
-: "${NAGIOS_API_HOME:=/app/nagios-dev}"
+: "${NAGIOS_API_HOME:=/app/nagios/api}"
+: "${NAGIOS_API_PORT:=8888}"
 : "${NAGIOS_HOME:=/app/nagios}"
 : "${NAGIOS_USER:=nagiosadmin}"
 : "${NAGIOS_PASS:=qwe123}"
@@ -18,6 +19,13 @@ set -m
 : "${INFLUXDB_ENV_IFDB_INIT_DB_USER_NM:=stigma}"
 : "${INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD:=stigma}"
 
+
+function setup_nagios_api() {
+    cp -R ${WORK}/api ${NAGIOS_HOME}/
+    sed -i "s/###NAGIOS_API_PORT###/${NAGIOS_API_PORT}/g" ${NAGIOS_API_HOME}/app.js
+    cd ${NAGIOS_API_HOME}
+    npm install
+}
 
 function backup_config () {
     cp ${NAGIOS_HOME}/etc/nagios.cfg ${NAGIOS_HOME}/etc/nagios.cfg.org
@@ -71,15 +79,19 @@ else
     echo "${NAGIOS_HOME} does not exists."
     tar xvfz ${WORK}/nagios.tar.gz -C /
 
+    #nagios api
+    echo "+++++ Install nagios API server."
+    setup_nagios_api
+
     ### nagios_dev 
-    echo "+++++ Laravel App Directory create and copy config files..."
-    cp ${WORK}/conf/httpd-vhosts.conf /etc/httpd/conf.d/
-    ## Laravel Setting
-    cd ${APP_HOME} && git clone https://github.com/stigma2/nagios-dev.git ${NAGIOS_API_HOME}
-    cd ${NAGIOS_API_HOME} && chmod -R 777 storage && composer install
-    cp ${NAGIOS_API_HOME}/.env.example ${NAGIOS_API_HOME}/.env
-    cd ${NAGIOS_API_HOME} && php artisan key:generate
-    sed -i "s|###NAGIOS_API_HOME###|${NAGIOS_API_HOME}|g" /etc/httpd/conf.d/httpd-vhosts.conf
+    # echo "+++++ Laravel App Directory create and copy config files..."
+    # cp ${WORK}/conf/httpd-vhosts.conf /etc/httpd/conf.d/
+    # ## Laravel Setting
+    # cd ${APP_HOME} && git clone https://github.com/stigma2/nagios-dev.git ${NAGIOS_API_HOME}
+    # cd ${NAGIOS_API_HOME} && chmod -R 777 storage && composer install
+    # cp ${NAGIOS_API_HOME}/.env.example ${NAGIOS_API_HOME}/.env
+    # cd ${NAGIOS_API_HOME} && php artisan key:generate
+    # sed -i "s|###NAGIOS_API_HOME###|${NAGIOS_API_HOME}|g" /etc/httpd/conf.d/httpd-vhosts.conf
     ### nagios_dev 
 fi
 
@@ -106,6 +118,8 @@ if [ "${GRAPHIOS_USED}" = "y" ]; then
 fi
 
 
+# Nagios API Start
+node ${NAGIOS_API_HOME}/app.js &
 
 # Nagios Start
 ${NAGIOS_HOME}/bin/nagios ${NAGIOS_HOME}/etc/nagios.cfg &
