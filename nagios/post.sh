@@ -22,7 +22,7 @@ set -m
 
 function setup_nagios_api() {
     cp -R ${WORK}/api ${NAGIOS_HOME}/
-    sed -i "s/###NAGIOS_API_PORT###/${NAGIOS_API_PORT}/g" ${NAGIOS_API_HOME}/app.js
+    sed -i "s/###NAGIOS_API_PORT###/${NAGIOS_API_PORT}/" ${NAGIOS_API_HOME}/app.js
     cd ${NAGIOS_API_HOME}
     npm install
 }
@@ -50,7 +50,7 @@ function setup_graphios () {
 
 function write_graphios_perf_templ() {
     cat ${NAGIOS_CONF}/graphios_commands.txt >> ${NAGIOS_HOME}/etc/nagios.cfg
-    sed -i 's/process_performance_data=0/process_performance_data=1/g' ${NAGIOS_HOME}/etc/nagios.cfg
+    sed -i 's/process_performance_data=0/process_performance_data=1/' ${NAGIOS_HOME}/etc/nagios.cfg
     sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_HOME}/etc/nagios.cfg
 }
 
@@ -63,7 +63,7 @@ function write_graphios_command() {
 
 function modify_graphios_config () {
     sed -i "s/\#influxdb_line_protocol/influxdb_line_protocol/" ${GRAPHIOS_HOME}/graphios.cfg
-    sed -i "s/enable_influxdb09 = False/enable_influxdb09 = True/g" ${GRAPHIOS_HOME}/graphios.cfg
+    sed -i "s/enable_influxdb09 = False/enable_influxdb09 = True/" ${GRAPHIOS_HOME}/graphios.cfg
     echo "## InfluxDB Information of Nagios Status Data" >> ${GRAPHIOS_HOME}/graphios.cfg
     echo "influxdb_servers = $INFLUXDB_PORT_8086_TCP_ADDR:8086" >> ${GRAPHIOS_HOME}/graphios.cfg
     echo "influxdb_db = $INFLUXDB_ENV_IFDB_INIT_DB" >> ${GRAPHIOS_HOME}/graphios.cfg
@@ -82,17 +82,6 @@ else
     #nagios api
     echo "+++++ Install nagios API server."
     setup_nagios_api
-
-    ### nagios_dev 
-    # echo "+++++ Laravel App Directory create and copy config files..."
-    # cp ${WORK}/conf/httpd-vhosts.conf /etc/httpd/conf.d/
-    # ## Laravel Setting
-    # cd ${APP_HOME} && git clone https://github.com/stigma2/nagios-dev.git ${NAGIOS_API_HOME}
-    # cd ${NAGIOS_API_HOME} && chmod -R 777 storage && composer install
-    # cp ${NAGIOS_API_HOME}/.env.example ${NAGIOS_API_HOME}/.env
-    # cd ${NAGIOS_API_HOME} && php artisan key:generate
-    # sed -i "s|###NAGIOS_API_HOME###|${NAGIOS_API_HOME}|g" /etc/httpd/conf.d/httpd-vhosts.conf
-    ### nagios_dev 
 fi
 
 #Creating a password for nagiosadmin

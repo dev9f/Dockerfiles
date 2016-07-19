@@ -44,20 +44,6 @@ RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod 
 RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
     yum -y install nodejs
 
-### For nagios-dev ##################################
-# # Install SW Packages
-# RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm && \
-#     yum-config-manager --enable remi-php56,remi
-
-# # Install Apache, PHP
-# RUN yum -y install php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm
-
-# # Install Composer
-# RUN curl -sS https://getcomposer.org/installer | php && \
-#     mv composer.phar /usr/local/bin/composer && \
-#     chmod +x /usr/local/bin/composer
-### For nagios-dev ##################################
-
 
 # ADD Scripts
 ADD ./post.sh  ${WORK}/post.sh
