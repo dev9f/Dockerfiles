@@ -15,7 +15,8 @@ var hostsModule = (function() {
             //
         },
         getHostStatusDetail: function(req, res) {
-            //
+            var result = util.delete('/app/nagios/api/test');
+            // console.log(result);
         }
     };
     return {
