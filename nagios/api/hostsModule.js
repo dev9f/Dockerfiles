@@ -1,24 +1,32 @@
+var util = require('./util.js');
+
 var hostsModule = (function() {
     var _private = {
-        getHostsStatusList: function(req) {
-            return { message: 'hostsModule getHostsStatusList' };
+        getHostsStatusList: function(req, res) {
+            var hoststatus = req.params.hoststatus;
+            var command = '/nagios/cgi-bin/statusjson.cgi?query=hostlist&details=true';
+            if (util.isset(hoststatus)) {
+                command += '&hoststatus=' + hoststatus;
+            }
+
+            util.send(command, res);
         },
-        saveHostConfig: function(req) {
-            return { message: 'hostsModule saveHostConfig' };
+        writeHostConfig: function(req, res) {
+            //
         },
-        getHostStatusDetail: function(req) {
-            return { message: 'hostsModule getHostStatusDetail' };
+        getHostStatusDetail: function(req, res) {
+            //
         }
     };
     return {
-        index: function(req) {
-            return _private.getHostsStatusList(req);
+        index: function(req, res) {
+            _private.getHostsStatusList(req, res);
         },
-        store: function(req) {
-            return _private.saveHostConfig(req);
+        store: function(req, res) {
+            _private.writeHostConfig(req, res);
         },
-        show: function(req) {
-            return _private.getHostStatusDetail(req);
+        show: function(req, res) {
+            _private.getHostStatusDetail(req, res);
         }
     }
 }());

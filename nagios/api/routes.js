@@ -12,20 +12,16 @@ router.get('/', function(req, res) {
     res.json({ message: 'Nagios API v1' });
 });
 // router.post('/commands', function(req, res) {
-//     var result = commandsModule.store();
-//     res.json(result);
+//     commandsModule.store();
 // });
 router.get('/hosts', function(req, res) {
-    var result = hostsModule.index(req);
-    res.json(result);
+    hostsModule.index(req, res);
 });
 router.post('/hosts', function(req, res) {
-    var result = hostsModule.store(req);
-    res.json(result);
+    hostsModule.store(req, res);
 });
 router.get('/hosts/:id', function(req, res) {
-    var result = hostsModule.show(req);
-    res.json(result);
+    hostsModule.show(req, res);
 });
 
 var appRouter = function(app) {
