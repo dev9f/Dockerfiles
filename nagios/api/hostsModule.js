@@ -12,11 +12,33 @@ var hostsModule = (function() {
             util.send(command, res);
         },
         writeHostConfig: function(req, res) {
-            //
+            var payload = req.body.payload;
+            if (util.isset(payload)) {
+                var configs = '';
+
+                for (x in payload) {
+                    var details = payload[x]['details'];
+                    var config = '';
+
+                    for (y in details) {
+                        config += '\t' + y + '\t' + details[y] + '\n';
+                    }
+
+                    configs += 'define host{\n' + config + '}\n\n';
+                }
+                // console.log('configs: \n' + configs);
+                
+                // delete host.cfg file
+                var config = '/app/nagios/api/test';
+                util.delete(config);
+
+                // save host.cfg file
+            } else {
+                // return '400 error Invalid argument';
+            }
         },
         getHostStatusDetail: function(req, res) {
-            var result = util.delete('/app/nagios/api/test');
-            // console.log(result);
+            //
         }
     };
     return {
