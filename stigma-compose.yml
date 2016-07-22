@@ -36,6 +36,7 @@ services:
       - influxdb
     ports:
       - 8080:80
+      - 8888:8888
     environment:
       PREFIX_LOCALHOST: stigma
     volumes:
