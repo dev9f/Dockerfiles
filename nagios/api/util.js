@@ -10,9 +10,9 @@ var Utility = (function() {
             request.get(url, function(error, response, body) {
                 if (error) {
                     console.error(error);
-                    res.send(error);
+                    res.json(error);
                 }
-                res.send(body);
+                res.json(body);
             }).auth('nagiosadmin', 'qwe123', false);
         },
         deleteFile: function(file) {

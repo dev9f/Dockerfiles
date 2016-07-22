@@ -49,7 +49,10 @@ var hostsModule = (function() {
             }
         },
         getHostStatusDetail: function(req, res) {
-            //
+            var hostname = req.params.hostname;
+            var command = '/nagios/cgi-bin/statusjson.cgi?query=host&hostname=' + hostname;
+
+            util.send(command, res);
         }
     };
     return {
