@@ -3,6 +3,7 @@ var router = express.Router();
 // var commandsModule = require('./commandsModule.js');
 var hostsModule = require('./hostsModule.js');
 var servicesModule = require('./servicesModule.js');
+var nagiosModule = require('./nagiosModule.js');
 
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', new Date());
@@ -32,6 +33,9 @@ router.post('/services', function(req, res) {
 });
 router.get('/services/:id', function(req, res) {
     servicesModule.show(req, res);
+});
+router.get('/nagios', function(req, res) {
+    nagiosModule.index(req, res);
 });
 
 
