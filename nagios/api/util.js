@@ -16,10 +16,14 @@ var Utility = (function() {
             }).auth('nagiosadmin', 'qwe123', false);
         },
         writeConfigFile: function(config, configs, res) {
-            // delete services.cfg file
-            _private.deleteFile(config);
+            // delete cfg file
+            var result = _private.execute('rm -f ' + config);
+            if (!result) {
+                res.status(400);
+                res.send('File removing fail.');
+            }
 
-            // save services.cfg file
+            // save cfg file
             var fs = require('fs');
             fs.writeFile(config, configs, function(error) {
                 if (error) {
@@ -27,17 +31,20 @@ var Utility = (function() {
                     res.status(400);
                     res.send('File writing fail.');
                 }
-                console.log('The ' + config + ' file was saved!');
+                console.log('The "' + config + '" file was saved!');
                 res.status(200);
                 res.send('File writing success.');
             })
         },
-        deleteFile: function(file) {
-            var url = 'http://localhost/delete.php?file=' + file;
+        executeShell: function(command) {
+            var shell = require('shelljs');
 
-            request.get(url, function(error) {
-                if (error) console.error(error);
-            })
+            if (shell.exec(command).code !== 0) {
+                console.error('Error. "' + command +'" does not executed.');
+                return false;
+            }
+
+            return true;
         }
     };
     return {
@@ -49,6 +56,9 @@ var Utility = (function() {
         },
         write: function(config, configs, res) {
             _private.writeConfigFile(config, configs, res);
+        },
+        execute: function(command) {
+            return _private.executeShell(command);
         }
     }
 }());
