@@ -12,6 +12,7 @@
     "express": "*",
     "body-parser": "*",
     "request": "*",
-    "fs": "*"
+    "fs": "*",
+    "shelljs": "*"
   }
 }
