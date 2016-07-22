@@ -27,32 +27,23 @@ var hostsModule = (function() {
                     configs += 'define host{\n' + config + '}\n\n';
                 }
 
-                // delete host.cfg file
-                var config = '/app/nagios/api/test/host.cfg';
-                util.delete(config);
-
-                // save host.cfg file
-                var fs = require('fs');
-                fs.writeFile(config, configs, function(error) {
-                    if (error) {
-                        console.error(error);
-                        res.statusCode = 400;
-                        return res.send('File writing fail.');
-                    }
-                    console.log('The ' + config + ' file was saved!');
-                    res.statusCode = 200;
-                    return res.send('File writing success.');
-                })
+                var config = '/app/nagios/api/test/hosts.cfg';
+                util.write(config, configs, res);
             } else {
-                res.statusCode = 400;
+                res.status(400);
                 return res.send('Invalid argument.');
             }
         },
         getHostStatusDetail: function(req, res) {
             var hostname = req.params.hostname;
-            var command = '/nagios/cgi-bin/statusjson.cgi?query=host&hostname=' + hostname;
+            if (util.isset(hostname)) {
+                var command = '/nagios/cgi-bin/statusjson.cgi?query=host&hostname=' + hostname;
 
-            util.send(command, res);
+                util.send(command, res);
+            } else {
+                res.status(400);
+                return res.send('Invalid argument.');
+            }
         }
     };
     return {
