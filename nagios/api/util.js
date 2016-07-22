@@ -16,12 +16,10 @@ var Utility = (function() {
             }).auth('nagiosadmin', 'qwe123', false);
         },
         deleteFile: function(file) {
-            var uri = 'http://localhost/delete.php?file=' + file;
-            
-            request.get(uri, function(error) {
-                if (error) {
-                    console.error(error);
-                }
+            var url = 'http://localhost/delete.php?file=' + file;
+
+            request.get(url, function(error) {
+                if (error) console.error(error);
             })
         }
     };
@@ -33,7 +31,7 @@ var Utility = (function() {
             _private.sendRequest(command, res);
         },
         delete: function(file) {
-            return _private.deleteFile(file);
+            _private.deleteFile(file);
         }
     }
 }());
