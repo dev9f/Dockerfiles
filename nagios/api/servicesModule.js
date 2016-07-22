@@ -31,7 +31,7 @@ var servicesModule = (function() {
                 util.write(config, configs, res);
             } else {
                 res.status(400);
-                return res.send('Invalid argument.');
+                res.send('Invalid argument.');
             }
         },
         getServiceStatusDetail: function(req, res) {
@@ -43,7 +43,7 @@ var servicesModule = (function() {
                 util.send(command, res);
             } else {
                 res.status(400);
-                return res.send('Invalid argument.');
+                res.send('Invalid argument.');
             }
         }
     };
@@ -52,7 +52,7 @@ var servicesModule = (function() {
             _private.getServicesStatusList(req, res);
         },
         store: function(req, res) {
-            return _private.writeServiceConfig(req, res);
+            _private.writeServiceConfig(req, res);
         },
         show: function(req, res) {
             _private.getServiceStatusDetail(req, res);

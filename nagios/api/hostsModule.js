@@ -31,7 +31,7 @@ var hostsModule = (function() {
                 util.write(config, configs, res);
             } else {
                 res.status(400);
-                return res.send('Invalid argument.');
+                res.send('Invalid argument.');
             }
         },
         getHostStatusDetail: function(req, res) {
@@ -42,7 +42,7 @@ var hostsModule = (function() {
                 util.send(command, res);
             } else {
                 res.status(400);
-                return res.send('Invalid argument.');
+                res.send('Invalid argument.');
             }
         }
     };
@@ -51,7 +51,7 @@ var hostsModule = (function() {
             _private.getHostsStatusList(req, res);
         },
         store: function(req, res) {
-            return _private.writeHostConfig(req, res);
+            _private.writeHostConfig(req, res);
         },
         show: function(req, res) {
             _private.getHostStatusDetail(req, res);
