@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
     res.json({ message: 'Nagios API v1' });
 });
 router.post('/commands', function(req, res) {
-    commandsModule.store();
+    commandsModule.store(req, res);
 });
 router.get('/hosts', function(req, res) {
     hostsModule.index(req, res);

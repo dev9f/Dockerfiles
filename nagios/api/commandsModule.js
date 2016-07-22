@@ -2,22 +2,10 @@ var util = require('./util.js');
 
 var commandsModule = (function() {
     var _private = {
-        writeHostConfig: function(req, res) {
+        writeCommandConfig: function(req, res) {
             var payload = req.body.payload;
             if (util.isset(payload)) {
-                var configs = '';
-
-                for (x in payload) {
-                    var details = payload[x]['details'];
-                    var config = '';
-
-                    for (y in details) {
-                        config += '\t' + y + '\t' + details[y] + '\n';
-                    }
-
-                    configs += 'define command{\n' + config + '}\n\n';
-                }
-
+                var configs = util.make(payload, 'command');
                 var config = '/app/nagios/api/test/commands.cfg';
                 util.write(config, configs, res);
             } else {

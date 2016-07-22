@@ -14,19 +14,7 @@ var servicesModule = (function() {
         writeServiceConfig: function(req, res) {
             var payload = req.body.payload;
             if (util.isset(payload)) {
-                var configs = '';
-
-                for (x in payload) {
-                    var details = payload[x]['details'];
-                    var config = '';
-
-                    for (y in details) {
-                        config += '\t' + y + '\t' + details[y] + '\n';
-                    }
-
-                    configs += 'define service{\n' + config + '}\n\n';
-                }
-
+                var configs = util.make(payload, 'service');
                 var config = '/app/nagios/api/test/services.cfg';
                 util.write(config, configs, res);
             } else {

@@ -15,9 +15,25 @@ var Utility = (function() {
                 res.json(body);
             }).auth('nagiosadmin', 'qwe123', false);
         },
+        buildConfigsContents: function(payload, type) {
+            var configs = '';
+
+            for (x in payload) {
+                var details = payload[x]['details'];
+                var config = '';
+
+                for (y in details) {
+                    config += '\t' + y + '\t' + details[y] + '\n';
+                }
+
+                configs += 'define ' + type + '{\n' + config + '}\n\n';
+            }
+
+            return configs;
+        },
         writeConfigFile: function(config, configs, res) {
             // delete cfg file
-            var result = _private.execute('rm -f ' + config);
+            var result = _private.executeShell('rm -f ' + config);
             if (!result) {
                 res.status(400);
                 res.send('File removing fail.');
@@ -53,6 +69,9 @@ var Utility = (function() {
         },
         send: function(command, res) {
             _private.sendRequest(command, res);
+        },
+        make: function(payload, type) {
+            return _private.buildConfigsContents(payload, type);
         },
         write: function(config, configs, res) {
             _private.writeConfigFile(config, configs, res);
