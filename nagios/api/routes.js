@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 // var commandsModule = require('./commandsModule.js');
 var hostsModule = require('./hostsModule.js');
+var servicesModule = require('./servicesModule.js');
 
 router.use(function timeLog(req, res, next) {
     console.log('Time: ', new Date());
@@ -23,6 +24,16 @@ router.post('/hosts', function(req, res) {
 router.get('/hosts/:id', function(req, res) {
     hostsModule.show(req, res);
 });
+router.get('/services', function(req, res) {
+    servicesModule.index(req, res);
+});
+router.post('/services', function(req, res) {
+    servicesModule.store(req, res);
+});
+router.get('/services/:id', function(req, res) {
+    servicesModule.show(req, res);
+});
+
 
 var appRouter = function(app) {
     app.use('/api/v1', router);
