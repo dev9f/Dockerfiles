@@ -15,6 +15,23 @@ var Utility = (function() {
                 res.json(body);
             }).auth('nagiosadmin', 'qwe123', false);
         },
+        writeConfigFile: function(config, configs, res) {
+            // delete services.cfg file
+            _private.deleteFile(config);
+
+            // save services.cfg file
+            var fs = require('fs');
+            fs.writeFile(config, configs, function(error) {
+                if (error) {
+                    console.error(error);
+                    res.status(400);
+                    res.send('File writing fail.');
+                }
+                console.log('The ' + config + ' file was saved!');
+                res.status(200);
+                res.send('File writing success.');
+            })
+        },
         deleteFile: function(file) {
             var url = 'http://localhost/delete.php?file=' + file;
 
@@ -30,8 +47,8 @@ var Utility = (function() {
         send: function(command, res) {
             _private.sendRequest(command, res);
         },
-        delete: function(file) {
-            _private.deleteFile(file);
+        write: function(config, configs, res) {
+            _private.writeConfigFile(config, configs, res);
         }
     }
 }());
