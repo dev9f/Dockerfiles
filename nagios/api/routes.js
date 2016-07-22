@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-// var commandsModule = require('./commandsModule.js');
+var commandsModule = require('./commandsModule.js');
 var hostsModule = require('./hostsModule.js');
 var servicesModule = require('./servicesModule.js');
 var nagiosModule = require('./nagiosModule.js');
@@ -13,9 +13,9 @@ router.use(function timeLog(req, res, next) {
 router.get('/', function(req, res) {
     res.json({ message: 'Nagios API v1' });
 });
-// router.post('/commands', function(req, res) {
-//     commandsModule.store();
-// });
+router.post('/commands', function(req, res) {
+    commandsModule.store();
+});
 router.get('/hosts', function(req, res) {
     hostsModule.index(req, res);
 });
