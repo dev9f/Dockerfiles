@@ -4,15 +4,16 @@ var Utility = (function() {
         checkVariable: function(variable) {
             return typeof(variable) !== 'undefined' && variable !== null && variable !== '';
         },
-        sendRequest: function(command, res) {
+        sendRequest: function(command, callback) {
             var url = 'http://localhost' + command;
 
             request.get(url, function(error, response, body) {
-                if (error) {
-                    console.error(error);
-                    res.json(error);
-                }
-                res.json(body);
+                // if (error) {
+                //     console.error(error);
+                //     res.json(error);
+                // }
+                callback(response);
+                // res.json(body);
             }).auth('nagiosadmin', 'qwe123', false);
         },
         buildConfigsContents: function(payload, type) {
@@ -67,8 +68,8 @@ var Utility = (function() {
         isset: function(variable) {
             return _private.checkVariable(variable);
         },
-        send: function(command, res) {
-            _private.sendRequest(command, res);
+        send: function(command, callback) {
+            return _private.sendRequest(command, callback);
         },
         make: function(payload, type) {
             return _private.buildConfigsContents(payload, type);

@@ -9,7 +9,9 @@ var hostsModule = (function() {
                 command += '&hoststatus=' + hoststatus;
             }
 
-            util.send(command, res);
+            util.send(command, function(response) {
+                console.log(response.body);
+            });
         },
         writeHostConfig: function(req, res) {
             var payload = req.body.payload;
