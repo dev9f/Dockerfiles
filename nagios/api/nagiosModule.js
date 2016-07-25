@@ -17,20 +17,20 @@ var nagiosModule = (function() {
                         break;
                     default:
                         res.status(400);
-                        res.send('Invalid command: ' + paramCommand);
+                        res.send({msg: 'Invalid argument.'});
                 }
 
                 var result = util.execute(command);
                 if (!result) {
                     res.status(400);
-                    res.send('Can not execute the command.');
+                    res.send({msg: 'Can not execute the command.'});
                 }
 
                 res.status(200);
-                res.send(message);
+                res.send({msg: message});
             } else {
                 res.status(400);
-                res.send('Invalid argument.');
+                res.send({msg: 'Invalid argument.'});
             }
         }
     };

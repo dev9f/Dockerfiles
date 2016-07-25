@@ -10,7 +10,12 @@ var hostsModule = (function() {
             }
 
             util.send(command, function(response) {
-                console.log(response.body);
+                if (response.success) {
+                    res.send(response.body);
+                } else {
+                    res.status(response.statusCode);
+                    res.send({msg: response.statusMessage});
+                }
             });
         },
         writeHostConfig: function(req, res) {
@@ -18,10 +23,13 @@ var hostsModule = (function() {
             if (util.isset(payload)) {
                 var configs = util.make(payload, 'host');
                 var config = '/app/nagios/api/test/hosts.cfg';
-                util.write(config, configs, res);
+                util.write(config, configs, function(response) {
+                    res.status(response.statusCode);
+                    res.send({msg: response.statusMessage});
+                });
             } else {
                 res.status(400);
-                res.send('Invalid argument.');
+                res.send({msg: 'Invalid argument.'});
             }
         },
         getHostStatusDetail: function(req, res) {
@@ -29,10 +37,17 @@ var hostsModule = (function() {
             if (util.isset(hostname)) {
                 var command = '/nagios/cgi-bin/statusjson.cgi?query=host&hostname=' + hostname;
 
-                util.send(command, res);
+                util.send(command, function(response) {
+                    if (response.success) {
+                        res.send(response.body);
+                    } else {
+                        res.status(response.statusCode);
+                        res.send({msg: response.statusMessage});
+                    }
+                });
             } else {
                 res.status(400);
-                res.send('Invalid argument.');
+                res.send({msg: 'Invalid argument.'});
             }
         }
     };

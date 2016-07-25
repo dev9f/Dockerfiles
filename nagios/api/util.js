@@ -8,12 +8,14 @@ var Utility = (function() {
             var url = 'http://localhost' + command;
 
             request.get(url, function(error, response, body) {
-                // if (error) {
-                //     console.error(error);
-                //     res.json(error);
-                // }
-                callback(response);
-                // res.json(body);
+                if (!error && response.statusCode == 200) {
+                    console.log(response);
+                    callback({success: true, body: body});
+                } else {
+                    console.log(response);
+                    callback({success: false, statusCode: response.statusCode, 
+                        statusMessage: response.statusMessage});
+                }
             }).auth('nagiosadmin', 'qwe123', false);
         },
         buildConfigsContents: function(payload, type) {
@@ -32,12 +34,13 @@ var Utility = (function() {
 
             return configs;
         },
-        writeConfigFile: function(config, configs, res) {
+        writeConfigFile: function(config, configs, callback) {
             // delete cfg file
             var result = _private.executeShell('rm -f ' + config);
             if (!result) {
-                res.status(400);
-                res.send('File removing fail.');
+                console.log('Failed to delete file. "' + config + '"');
+                callback({success: false, statusCode: 400, 
+                    statusMessage: 'Failed to delete file.'});
             }
 
             // save cfg file
@@ -45,12 +48,12 @@ var Utility = (function() {
             fs.writeFile(config, configs, function(error) {
                 if (error) {
                     console.error(error);
-                    res.status(400);
-                    res.send('File writing fail.');
+                    callback({success: false, statusCode: 400, 
+                        statusMessage: 'Failed to write file.'});
                 }
-                console.log('The "' + config + '" file was saved!');
-                res.status(200);
-                res.send('File writing success.');
+                console.log('Succeeded to save file. "' + config + '"');
+                callback({success: true, statusCode: 200, 
+                    statusMessage: 'Succeeded to save file.'});
             })
         },
         executeShell: function(command) {
@@ -69,13 +72,13 @@ var Utility = (function() {
             return _private.checkVariable(variable);
         },
         send: function(command, callback) {
-            return _private.sendRequest(command, callback);
+            _private.sendRequest(command, callback);
         },
         make: function(payload, type) {
             return _private.buildConfigsContents(payload, type);
         },
-        write: function(config, configs, res) {
-            _private.writeConfigFile(config, configs, res);
+        write: function(config, configs, callback) {
+            _private.writeConfigFile(config, configs, callback);
         },
         execute: function(command) {
             return _private.executeShell(command);

@@ -7,10 +7,13 @@ var commandsModule = (function() {
             if (util.isset(payload)) {
                 var configs = util.make(payload, 'command');
                 var config = '/app/nagios/api/test/commands.cfg';
-                util.write(config, configs, res);
+                util.write(config, configs, function(response) {
+                    res.status(response.statusCode);
+                    res.send({msg: response.statusMessage});
+                });
             } else {
                 res.status(400);
-                res.send('Invalid argument.');
+                res.send({msg: 'Invalid argument.'});
             }
         }
     };

@@ -9,17 +9,27 @@ var servicesModule = (function() {
                 command += '&servicestatus=' + servicestatus;
             }
 
-            util.send(command, res);
+            util.send(command, function(response) {
+                if (response.success) {
+                    res.send(response.body);
+                } else {
+                    res.status(response.statusCode);
+                    res.send({msg: response.statusMessage});
+                }
+            });
         },
         writeServiceConfig: function(req, res) {
             var payload = req.body.payload;
             if (util.isset(payload)) {
                 var configs = util.make(payload, 'service');
                 var config = '/app/nagios/api/test/services.cfg';
-                util.write(config, configs, res);
+                util.write(config, configs, function(response) {
+                    res.status(response.statusCode);
+                    res.send({msg: response.statusMessage});
+                });
             } else {
                 res.status(400);
-                res.send('Invalid argument.');
+                res.send({msg: 'Invalid argument.'});
             }
         },
         getServiceStatusDetail: function(req, res) {
@@ -28,10 +38,17 @@ var servicesModule = (function() {
             if (util.isset(hostname) && util.isset(servicedescription)) {
                 var command = '/nagios/cgi-bin/statusjson.cgi?query=service&hostname=' + hostname + '&servicedescription=' + servicedescription;
 
-                util.send(command, res);
+                util.send(command, function(response) {
+                    if (response.success) {
+                        res.send(response.body);
+                    } else {
+                        res.status(response.statusCode);
+                        res.send({msg: response.statusMessage});
+                    }
+                });
             } else {
                 res.status(400);
-                res.send('Invalid argument.');
+                res.send({msg: 'Invalid argument.'});
             }
         }
     };
