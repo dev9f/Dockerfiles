@@ -13,6 +13,7 @@
     "body-parser": "*",
     "request": "*",
     "fs": "*",
-    "shelljs": "*"
+    "shelljs": "*",
+    "url": "*"
   }
 }
