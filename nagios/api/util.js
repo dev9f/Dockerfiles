@@ -19,6 +19,7 @@ var Utility = (function() {
             }).auth('nagiosadmin', 'qwe123', false);
         },
         buildConfigsContents: function(payload, type) {
+            var payload = JSON.parse(payload);
             var configs = '';
 
             for (x in payload) {
