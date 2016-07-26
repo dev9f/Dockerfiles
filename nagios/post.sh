@@ -22,7 +22,7 @@ set -m
 
 function setup_nagios_api() {
     cp -R ${WORK}/api ${NAGIOS_HOME}/
-    chown -R suser:suser ${NAGIOS_API_HOME}
+    # chown -R suser:suser ${NAGIOS_API_HOME}
     sed -i "s/###NAGIOS_API_PORT###/${NAGIOS_API_PORT}/" ${NAGIOS_API_HOME}/app.js
     cd ${NAGIOS_API_HOME}
     npm install
