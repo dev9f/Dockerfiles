@@ -3,7 +3,7 @@ var util = require('./util.js');
 var nagiosModule = (function() {
     var _private = {
         nagiosControl: function(req, res) {
-            var paramCommand = req.params.command;
+            var paramCommand = req.query.command;
             if (util.isset(paramCommand)) {
                 var command = 'sudo service nagios ' + paramCommand + ' 2>&1';
                 var message;

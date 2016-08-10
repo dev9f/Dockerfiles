@@ -23,7 +23,7 @@ router.get('/hosts', function(req, res) {
 router.post('/hosts', function(req, res) {
     hostsModule.store(req, res);
 });
-router.get('/hosts/:id', function(req, res) {
+router.get('/hosts/:hostname', function(req, res) {
     hostsModule.show(req, res);
 });
 router.get('/services', function(req, res) {
@@ -32,7 +32,7 @@ router.get('/services', function(req, res) {
 router.post('/services', function(req, res) {
     servicesModule.store(req, res);
 });
-router.get('/services/:id', function(req, res) {
+router.get('/services/:hostname', function(req, res) {
     servicesModule.show(req, res);
 });
 router.get('/nagios', function(req, res) {

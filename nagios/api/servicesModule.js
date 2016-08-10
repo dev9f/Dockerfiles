@@ -3,7 +3,7 @@ var util = require('./util.js');
 var servicesModule = (function() {
     var _private = {
         getServicesStatusList: function(req, res) {
-            var servicestatus = req.params.servicestatus;
+            var servicestatus = req.query.servicestatus;
             var command = '/nagios/cgi-bin/statusjson.cgi?query=servicelist&details=true';
             if (util.isset(servicestatus)) {
                 command += '&servicestatus=' + servicestatus;
@@ -34,7 +34,7 @@ var servicesModule = (function() {
         },
         getServiceStatusDetail: function(req, res) {
             var hostname = req.params.hostname;
-            var servicedescription = req.params.servicedescription;
+            var servicedescription = req.query.servicedescription;
             if (util.isset(hostname) && util.isset(servicedescription)) {
                 var command = '/nagios/cgi-bin/statusjson.cgi?query=service&hostname=' + hostname + '&servicedescription=' + servicedescription;
 

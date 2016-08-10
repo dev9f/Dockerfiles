@@ -3,7 +3,7 @@ var util = require('./util.js');
 var hostsModule = (function() {
     var _private = {
         getHostsStatusList: function(req, res) {
-            var hoststatus = req.params.hoststatus;
+            var hoststatus = req.query.hoststatus;
             var command = '/nagios/cgi-bin/statusjson.cgi?query=hostlist&details=true';
             if (util.isset(hoststatus)) {
                 command += '&hoststatus=' + hoststatus;
