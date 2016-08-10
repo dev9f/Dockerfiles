@@ -41,12 +41,9 @@ var statisticModule = (function() {
                         });
                         break;
                     case 'log':
-                        var url = require('url');
-                        var url_parts = url.parse(req.url, true);
-                        var query = url_parts.query;
-                        var type = query.type;
-                        var starttime = query.starttime;
-                        var endtime = query.endtime;
+                        var type = req.query.type;
+                        var starttime = req.query.starttime;
+                        var endtime = req.query.endtime;
                         if (util.isset(type) && util.isset(starttime) && util.isset(endtime)) {
                             var command = '/nagios/cgi-bin/archivejson.cgi?query=alertlist&objecttypes=' + type + '&starttime=' + starttime + '&endtime=' + endtime;
                             util.send(command, function(response) {
