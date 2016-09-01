@@ -10,6 +10,7 @@ set -m
 : "${NAGIOS_HOME:=/app/nagios}"
 : "${NAGIOS_USER:=nagiosadmin}"
 : "${NAGIOS_PASS:=qwe123}"
+: "${NAGIOS_CFG_SERVERS:=/app/nagios/etc/servers}"
 : "${GRAPHIOS_HOME:=/app/nagios/graphios}"
 : "${GRAPHIOS_SPOOL:=/var/spool/nagios/graphios}"
 : "${GRAPHIOS_USED:=y}"
@@ -28,6 +29,11 @@ function setup_nagios_api() {
     npm install
 }
 
+function setup_cfg_dir() {
+    sed -i "s/#cfg_dir=\/app\/nagios\/etc\/servers/cfg_dir=\/app\/nagios\/etc\/servers/" ${NAGIOS_HOME}/etc/nagios.cfg
+    mkdir -p ${NAGIOS_CFG_SERVERS}
+    chmod 755 ${NAGIOS_CFG_SERVERS}
+}
 function backup_config () {
     cp ${NAGIOS_HOME}/etc/nagios.cfg ${NAGIOS_HOME}/etc/nagios.cfg.org
     cp ${GRAPHIOS_HOME}/graphios.cfg ${GRAPHIOS_HOME}/graphios.cfg.org
@@ -83,6 +89,9 @@ else
     #nagios api
     echo "+++++ Install nagios API server."
     setup_nagios_api
+
+    #cfg directory
+    setup_cfg_dir
 fi
 
 #Creating a password for nagiosadmin

@@ -6,7 +6,7 @@ var commandsModule = (function() {
             var payload = req.body.payload;
             if (util.isset(payload)) {
                 var configs = util.make(payload, 'command');
-                var config = '/app/nagios/api/test/commands.cfg';
+                var config = '/app/nagios/etc/servers/commands.cfg';
                 util.write(config, configs, function(response) {
                     res.status(response.statusCode);
                     res.send({msg: response.statusMessage});
