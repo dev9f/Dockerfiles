@@ -9,10 +9,11 @@ var Utility = (function() {
 
             request.get(url, function(error, response, body) {
                 if (!error && response.statusCode == 200) {
-                    console.log(response);
+                    console.log('url: ' + url);
+                    console.log('success: true');
                     callback({success: true, body: body});
                 } else {
-                    console.log(response);
+                    console.error(response);
                     callback({success: false, statusCode: response.statusCode, 
                         statusMessage: response.statusMessage});
                 }
