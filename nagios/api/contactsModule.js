@@ -6,7 +6,7 @@ var contactsModule = (function() {
             var payload = req.body.payload;
             if (util.isset(payload)) {
                 var configs = util.make(payload, 'contact');
-                var config = '/app/nagios/etc/servers/contacts.cfg';
+                var config = '/app/nagios/etc/objects/contacts.cfg';
                 util.write(config, configs, function(response) {
                     res.status(response.statusCode);
                     res.send({msg: response.statusMessage});
