@@ -23,17 +23,20 @@ set -m
 
 function setup_nagios_api() {
     cp -R ${WORK}/api ${NAGIOS_HOME}/
-    # chown -R suser:suser ${NAGIOS_API_HOME}
     sed -i "s/###NAGIOS_API_PORT###/${NAGIOS_API_PORT}/" ${NAGIOS_API_HOME}/app.js
     cd ${NAGIOS_API_HOME}
     npm install
 }
 
-function setup_cfg_dir() {
+function setup_nagios_cfg() {
     sed -i "s/#cfg_dir=\/app\/nagios\/etc\/servers/cfg_dir=\/app\/nagios\/etc\/servers/" ${NAGIOS_HOME}/etc/nagios.cfg
     mkdir -p ${NAGIOS_CFG_SERVERS}
     chmod 755 ${NAGIOS_CFG_SERVERS}
+
+    sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
+    cp ${NAGIOS_HOME}/etc/objects/localhost.cfg ${NAGIOS_CFG_SERVERS}/hosts.cfg
 }
+
 function backup_config () {
     cp ${NAGIOS_HOME}/etc/nagios.cfg ${NAGIOS_HOME}/etc/nagios.cfg.org
     cp ${GRAPHIOS_HOME}/graphios.cfg ${GRAPHIOS_HOME}/graphios.cfg.org
@@ -50,8 +53,8 @@ function setup_graphios () {
     write_graphios_perf_templ
     write_graphios_command
 
-    cat ${NAGIOS_CONF}/localhost.cfg > ${NAGIOS_HOME}/etc/objects/localhost.cfg
-    sed -i "s|###PREFIX_LOCALHOST###|${PREFIX_LOCALHOST}|g" ${NAGIOS_HOME}/etc/objects/localhost.cfg
+    cat ${NAGIOS_CONF}/localhost.cfg > ${NAGIOS_CFG_SERVERS}/hosts.cfg
+    sed -i "s|###PREFIX_LOCALHOST###|${PREFIX_LOCALHOST}|g" ${NAGIOS_CFG_SERVERS}/hosts.cfg
     sed -i "s|\/usr\/local\/nagios\/var\/graphios.log|${GRAPHIOS_HOME}\/logs\/graphios.log|g" ${GRAPHIOS_HOME}/graphios.cfg
 }
 
@@ -91,7 +94,7 @@ else
     setup_nagios_api
 
     #cfg directory
-    setup_cfg_dir
+    setup_nagios_cfg
 fi
 
 #Creating a password for nagiosadmin
