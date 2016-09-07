@@ -35,6 +35,9 @@ function setup_nagios_cfg() {
 
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
     cp ${NAGIOS_HOME}/etc/objects/localhost.cfg ${NAGIOS_CFG_SERVERS}/hosts.cfg
+
+    sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
+    cp ${NAGIOS_HOME}/etc/objects/templates.cfg ${NAGIOS_CFG_SERVERS}/services.cfg
 }
 
 function backup_config () {
