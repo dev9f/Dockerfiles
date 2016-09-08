@@ -33,10 +33,10 @@ function setup_nagios_cfg() {
     #mkdir -p ${NAGIOS_CFG_SERVERS}
     #chmod 755 ${NAGIOS_CFG_SERVERS}
 
-    sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
+    sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/cfg_file=\/app\/nagios\/etc\/objects\/hosts.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
     cp ${NAGIOS_CFG_OBJECTS}/localhost.cfg ${NAGIOS_CFG_OBJECTS}/hosts.cfg
 
-    sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
+    sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/cfg_file=\/app\/nagios\/etc\/objects\/services.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
     cp ${NAGIOS_CFG_OBJECTS}/templates.cfg ${NAGIOS_CFG_OBJECTS}/services.cfg
 }
 
