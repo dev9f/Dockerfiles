@@ -10,7 +10,7 @@ set -m
 : "${NAGIOS_HOME:=/app/nagios}"
 : "${NAGIOS_USER:=nagiosadmin}"
 : "${NAGIOS_PASS:=qwe123}"
-: "${NAGIOS_CFG_SERVERS:=/app/nagios/etc/servers}"
+: "${NAGIOS_CFG_OBJECTS:=/app/nagios/etc/objects}"
 : "${GRAPHIOS_HOME:=/app/nagios/graphios}"
 : "${GRAPHIOS_SPOOL:=/var/spool/nagios/graphios}"
 : "${GRAPHIOS_USED:=y}"
@@ -29,15 +29,15 @@ function setup_nagios_api() {
 }
 
 function setup_nagios_cfg() {
-    sed -i "s/#cfg_dir=\/app\/nagios\/etc\/servers/cfg_dir=\/app\/nagios\/etc\/servers/" ${NAGIOS_HOME}/etc/nagios.cfg
-    mkdir -p ${NAGIOS_CFG_SERVERS}
-    chmod 755 ${NAGIOS_CFG_SERVERS}
+    #sed -i "s/#cfg_dir=\/app\/nagios\/etc\/servers/cfg_dir=\/app\/nagios\/etc\/servers/" ${NAGIOS_HOME}/etc/nagios.cfg
+    #mkdir -p ${NAGIOS_CFG_SERVERS}
+    #chmod 755 ${NAGIOS_CFG_SERVERS}
 
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
-    cp ${NAGIOS_HOME}/etc/objects/localhost.cfg ${NAGIOS_CFG_SERVERS}/hosts.cfg
+    cp ${NAGIOS_CFG_OBJECTS}/localhost.cfg ${NAGIOS_CFG_OBJECTS}/hosts.cfg
 
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/#cfg_file=\/app\/nagios\/etc\/objects\/templates.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
-    cp ${NAGIOS_HOME}/etc/objects/templates.cfg ${NAGIOS_CFG_SERVERS}/services.cfg
+    cp ${NAGIOS_CFG_OBJECTS}/templates.cfg ${NAGIOS_CFG_OBJECTS}/services.cfg
 }
 
 function backup_config () {
@@ -56,8 +56,8 @@ function setup_graphios () {
     write_graphios_perf_templ
     write_graphios_command
 
-    cat ${NAGIOS_CONF}/localhost.cfg > ${NAGIOS_CFG_SERVERS}/hosts.cfg
-    sed -i "s|###PREFIX_LOCALHOST###|${PREFIX_LOCALHOST}|g" ${NAGIOS_CFG_SERVERS}/hosts.cfg
+    cat ${NAGIOS_CONF}/localhost.cfg > ${NAGIOS_CFG_OBJECTS}/hosts.cfg
+    sed -i "s|###PREFIX_LOCALHOST###|${PREFIX_LOCALHOST}|g" ${NAGIOS_CFG_OBJECTS}/hosts.cfg
     sed -i "s|\/usr\/local\/nagios\/var\/graphios.log|${GRAPHIOS_HOME}\/logs\/graphios.log|g" ${GRAPHIOS_HOME}/graphios.cfg
 }
 
@@ -70,8 +70,8 @@ function write_graphios_perf_templ() {
 function write_graphios_command() {
     echo "## Graphios Command" >> ${NAGIOS_HOME}/etc/nagios.cfg
     echo "cfg_file=${NAGIOS_HOME}/etc/objects/graphios_commands.cfg" >> ${NAGIOS_HOME}/etc/nagios.cfg
-    cp ${NAGIOS_CONF}/graphios_commands.cfg ${NAGIOS_HOME}/etc/objects/
-    sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_HOME}/etc/objects/graphios_commands.cfg
+    cp ${NAGIOS_CONF}/graphios_commands.cfg ${NAGIOS_CFG_OBJECTS}/
+    sed -i "s|###GRAPHIOS_SPOOL###|${GRAPHIOS_SPOOL}|g" ${NAGIOS_CFG_OBJECTS}/graphios_commands.cfg
 }
 
 function modify_graphios_config () {
