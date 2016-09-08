@@ -22,7 +22,7 @@ var hostsModule = (function() {
             var payload = req.body.payload;
             if (util.isset(payload)) {
                 var configs = util.make(payload, 'host');
-                var config = '/app/nagios/etc/servers/hosts.cfg';
+                var config = '/app/nagios/etc/objects/hosts.cfg';
                 util.write(config, configs, function(response) {
                     res.status(response.statusCode);
                     res.send({msg: response.statusMessage});
