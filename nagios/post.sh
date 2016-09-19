@@ -29,10 +29,6 @@ function setup_nagios_api() {
 }
 
 function setup_nagios_cfg() {
-    #sed -i "s/#cfg_dir=\/app\/nagios\/etc\/servers/cfg_dir=\/app\/nagios\/etc\/servers/" ${NAGIOS_HOME}/etc/nagios.cfg
-    #mkdir -p ${NAGIOS_CFG_SERVERS}
-    #chmod 755 ${NAGIOS_CFG_SERVERS}
-
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/cfg_file=\/app\/nagios\/etc\/objects\/hosts.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
     cp ${NAGIOS_CFG_OBJECTS}/localhost.cfg ${NAGIOS_CFG_OBJECTS}/hosts.cfg
 
