@@ -5,7 +5,7 @@ var timeperiodsModule = (function() {
         writeTimeperiodConfig: function(req, res) {
             var payload = req.body.payload;
             if (util.isset(payload)) {
-                var configs = util.make(payload, 'timeperiod');
+                var configs = util.make(payload);
                 var config = '/app/nagios/etc/objects/timeperiods.cfg';
                 util.write(config, configs, function(response) {
                     res.status(response.statusCode);

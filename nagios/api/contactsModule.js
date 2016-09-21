@@ -5,10 +5,7 @@ var contactsModule = (function() {
         writeContactConfig: function(req, res) {
             var payload = req.body.payload;
             if (util.isset(payload)) {
-                var configs = util.make(payload, 'contact');
-                // ### contactgroup template ###
-                configs += "define contactgroup{\n\tcontactgroup_name\tadmins\n\talias\tNagios Administrators\n\tmembers\tnagiosadmin\n}\n\n";
-                // ### contactgroup template ###
+                var configs = util.make(payload);
                 var config = '/app/nagios/etc/objects/contacts.cfg';
                 util.write(config, configs, function(response) {
                     res.status(response.statusCode);

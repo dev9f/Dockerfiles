@@ -19,12 +19,13 @@ var Utility = (function() {
                 }
             }).auth('nagiosadmin', 'qwe123', false);
         },
-        buildConfigsContents: function(payload, type) {
+        buildConfigsContents: function(payload) {
             var payload = JSON.parse(payload);
             var configs = '';
 
             for (x in payload) {
                 var details = payload[x]['details'];
+                var type = payload[x]['type'];
                 var config = '';
 
                 for (y in details) {
@@ -76,8 +77,8 @@ var Utility = (function() {
         send: function(command, callback) {
             _private.sendRequest(command, callback);
         },
-        make: function(payload, type) {
-            return _private.buildConfigsContents(payload, type);
+        make: function(payload) {
+            return _private.buildConfigsContents(payload);
         },
         write: function(config, configs, callback) {
             _private.writeConfigFile(config, configs, callback);

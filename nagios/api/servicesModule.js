@@ -21,7 +21,7 @@ var servicesModule = (function() {
         writeServiceConfig: function(req, res) {
             var payload = req.body.payload;
             if (util.isset(payload)) {
-                var configs = util.make(payload, 'service');
+                var configs = util.make(payload);
                 var config = '/app/nagios/etc/objects/services.cfg';
                 util.write(config, configs, function(response) {
                     res.status(response.statusCode);
