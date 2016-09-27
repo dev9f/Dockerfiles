@@ -35,6 +35,12 @@ RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
     chmod +x /usr/local/bin/composer
 
+# Install GlusterFS gdeploy
+RUN yum -y install ansible python-argparse python-pip python-wheel PyYAML python-setuptools && \
+    pip install --upgrade pip && \
+    pip install Jinja2 && \
+    wget http://download.gluster.org/pub/gluster/gdeploy/2.0.1-1/CENTOS7/gdeploy-2.0.1-1.el7.centos.noarch.rpm && \ #LATEST at 2016-09-22
+    yum -y install gdeploy-2.0.1-1.el7.centos.noarch.rpm
 
 # Config file copy & Change owner and access permission
 ADD ./post.sh	${WORK}/post.sh
