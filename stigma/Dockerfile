@@ -1,4 +1,4 @@
-FROM centos:6
+FROM centos:7
 
 MAINTAINER Seongtaeyang / version: 1.0
 
@@ -14,10 +14,6 @@ RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils s
 RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
 RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 
-# TimeZone Change : KST
-RUN mv /etc/localtime /etc/localtime.bak && \
-        ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
-
 # Set Env
 ENV APP_HOME="/app" \
     WORK="/work" \
@@ -28,7 +24,7 @@ ENV APP_HOME="/app" \
 RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R suser:suser $APP_HOME 
 
 # Install SW Packages
-RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm && \
+RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm && \
     yum-config-manager --enable remi-php56,remi
 
 # Install Apache, PHP
