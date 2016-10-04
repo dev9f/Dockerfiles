@@ -43,6 +43,10 @@ function setup_env() {
     echo "DB_PASSWORD="${MYSQL_ROOT_PASSWORD} >> ${STIGMA_HOME}/.env
 }
 
+function setup_gdeploy() {
+    mkdir ${STIGMA_HOME}/gdeploy/conf
+}
+
 if [ -e ${STIGMA_HOME} ]
 then
     echo "+++++ ${STIGMA_HOME} already exists."
@@ -60,6 +64,8 @@ else
     setup_env
     cd ${STIGMA_HOME} && php artisan migrate && php artisan db:seed
     chmod 777 ${STIGMA_HOME}/config # && chown nagios:apache ${STIGMA_HOME}/config
+
+    setup_gdeploy
 fi
 
 
