@@ -48,6 +48,9 @@ RUN yum -y install ansible python-argparse python-pip python-wheel PyYAML python
     wget http://download.gluster.org/pub/gluster/gdeploy/2.0.1-1/CENTOS7/gdeploy-2.0.1-1.el7.centos.noarch.rpm && \
     yum -y install gdeploy-2.0.1-1.el7.centos.noarch.rpm
 
+# Copy stigma
+RUN cp -R /tmp/stigma/ ${WORK}/
+
 # Config file copy & Change owner and access permission
 ADD ./post.sh	${WORK}/post.sh
 ADD ./conf ${WORK_CONF}

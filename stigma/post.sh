@@ -60,7 +60,7 @@ else
 
     ## Laravel Setting
     # cd ${APP_HOME} && git clone https://github.com/stigma2/stigma2-dev.git ${STIGMA_HOME}
-    cp -R /tmp/stigma/ ${APP_HOME}/
+    cp -R ${WORK}/stigma/ ${APP_HOME}/
     cd ${STIGMA_HOME} && chmod -R 777 storage && composer install
     cp ${STIGMA_HOME}/.env.example ${STIGMA_HOME}/.env
     cd ${STIGMA_HOME} && php artisan key:generate
