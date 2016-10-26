@@ -10,6 +10,7 @@ set -m
 : "${MYSQL_DATABASE:=stigma}"
 : "${MYSQL_USERNAME:=root}"
 : "${MYSQL_ROOT_PASSWORD:=password}"
+: "${GLUSTERFS_MASTER:=192.168.1.200}"
 
 function setup_httpd_vhosts() {
     cp ${WORK_CONF}/httpd-vhosts.conf /etc/httpd/conf.d/
@@ -44,7 +45,9 @@ function setup_env() {
 }
 
 function setup_gdeploy() {
-    mkdir ${STIGMA_HOME}/gdeploy/conf
+    mkdir -p ${STIGMA_HOME}/gdeploy/conf
+
+    echo "${GLUSTERFS_MASTER}" >> /etc/ansible/hosts
 }
 
 if [ -e ${STIGMA_HOME} ]
@@ -57,7 +60,7 @@ else
 
     ## Laravel Setting
     #cd ${APP_HOME} && git clone https://github.com/stigma2/stigma2-dev.git ${STIGMA_HOME}
-    cd ${APP_HOME} && git clone https://github.com/ilyf28/stigma2-dev.git ${STIGMA_HOME}
+    cp -R /tmp/stigma/ ${STIGMA_HOME}
     cd ${STIGMA_HOME} && chmod -R 777 storage && composer install
     cp ${STIGMA_HOME}/.env.example ${STIGMA_HOME}/.env
     cd ${STIGMA_HOME} && php artisan key:generate
