@@ -43,6 +43,10 @@ function setup_env() {
     echo "DB_PASSWORD="${MYSQL_ROOT_PASSWORD} >> ${STIGMA_HOME}/.env
 }
 
+function setup_gdeploy() {
+    mkdir -p ${STIGMA_HOME}/gdeploy/conf
+}
+
 if [ -e ${STIGMA_HOME} ]
 then
     echo "+++++ ${STIGMA_HOME} already exists."
@@ -52,13 +56,16 @@ else
     setup_httpd_vhosts
 
     ## Laravel Setting
-    cd ${APP_HOME} && git clone https://github.com/stigma2/stigma2-dev.git ${STIGMA_HOME}
+    # cd ${APP_HOME} && git clone https://github.com/stigma2/stigma2-dev.git ${STIGMA_HOME}
+    cp -R /tmp/stigma/ ${APP_HOME}/
     cd ${STIGMA_HOME} && chmod -R 777 storage && composer install
     cp ${STIGMA_HOME}/.env.example ${STIGMA_HOME}/.env
     cd ${STIGMA_HOME} && php artisan key:generate
     setup_env
     cd ${STIGMA_HOME} && php artisan migrate && php artisan db:seed
     chmod 777 ${STIGMA_HOME}/config # && chown nagios:apache ${STIGMA_HOME}/config
+
+    setup_gdeploy
 fi
 
 
