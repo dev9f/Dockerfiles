@@ -3,19 +3,21 @@ FROM centos:7
 MAINTAINER Seongtaeyang / version: 1.0
 
 # Add Default User Account : suser / Change Password : root, suser
-#RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
-#        echo "suser:S2curity" | chpasswd && \
-#        echo "root:S2curity" | chpasswd
+# RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
+#         echo "suser:S2curity" | chpasswd && \
+#         echo "root:S2curity" | chpasswd
 
 # Install default package
 RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo 
 
 # sudo suser sshd
-#RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
-
-# sudo apache for gdeploy
+# RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
 RUN echo "apache  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
+
+# TimeZone Change : KST
+# RUN mv /etc/localtime /etc/localtime.bak && \
+#         ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 # Set Env
 ENV APP_HOME="/app" \
@@ -24,7 +26,7 @@ ENV APP_HOME="/app" \
 
 
 # Make default directory
-#RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R suser:suser $APP_HOME 
+# RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R suser:suser $APP_HOME 
 RUN mkdir -p $APP_HOME && mkdir -p $WORK
 
 # Install SW Packages
