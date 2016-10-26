@@ -10,6 +10,7 @@ set -m
 : "${MYSQL_DATABASE:=stigma}"
 : "${MYSQL_USERNAME:=root}"
 : "${MYSQL_ROOT_PASSWORD:=password}"
+: "${GLUSTERFS_MASTER:=192.168.1.200}"
 
 function setup_httpd_vhosts() {
     cp ${WORK_CONF}/httpd-vhosts.conf /etc/httpd/conf.d/
@@ -45,6 +46,8 @@ function setup_env() {
 
 function setup_gdeploy() {
     mkdir -p ${STIGMA_HOME}/gdeploy/conf
+
+    echo "${GLUSTERFS_MASTER}" >> /etc/ansible/hosts
 }
 
 if [ -e ${STIGMA_HOME} ]
