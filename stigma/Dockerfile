@@ -49,7 +49,7 @@ RUN yum -y install ansible python-argparse python-pip python-wheel PyYAML python
     yum -y install gdeploy-2.0.1-1.el7.centos.noarch.rpm
 
 # Copy stigma
-ADD ./stigma/ ${WORK}/stigma
+ADD /tmp/stigma/ ${WORK}/stigma
 
 # Config file copy & Change owner and access permission
 ADD ./post.sh	${WORK}/post.sh
