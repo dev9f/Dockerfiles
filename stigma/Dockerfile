@@ -1,6 +1,6 @@
 FROM centos:7
 
-MAINTAINER Seongtaeyang / version: 1.0
+#MAINTAINER Seongtaeyang / version: 1.0
 
 # Add Default User Account : suser / Change Password : root, suser
 # RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
@@ -12,7 +12,7 @@ RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils s
 
 # sudo suser sshd
 # RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
-RUN echo "apache  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+RUN echo "apache    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 
 # TimeZone Change : KST

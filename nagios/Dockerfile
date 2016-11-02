@@ -1,22 +1,22 @@
-FROM centos:6
+FROM centos:7
 
-MAINTAINER heeminChae / version: 1.0
+#MAINTAINER heeminChae / version: 1.0
 
 # Add Default User Account : suser / Change Password : root, suser
-RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
-    echo "suser:S2curity" | chpasswd && \
-    echo "root:S2crity" | chpasswd
+# RUN groupadd -g 500 -r suser && useradd -u 500 -r -m -g suser suser && \
+#     echo "suser:S2curity" | chpasswd && \
+#     echo "root:S2crity" | chpasswd
 
 # Install default package
 RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo 
 
 # sudo suser sshd
-RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
-RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
+# RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
+# RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 
 # TimeZone Change : KST
-RUN mv /etc/localtime /etc/localtime.bak && \
-    ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
+# RUN mv /etc/localtime /etc/localtime.bak && \
+#     ln -s /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 
 # Set Env
 ENV APP_HOME="/app" \
@@ -32,17 +32,18 @@ ENV APP_HOME="/app" \
 
 
 # Make default directory
-RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME} && chown -R suser:suser ${APP_HOME}
+RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
+    # && chown -R suser:suser ${APP_HOME}
 
 # install Prerequisites
-RUN yum install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip -y
+RUN yum -y install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip nodejs npm
 
 # Create user and group for Nagios to use
 RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
 
 # install Node.js v4 LTS Argon
-RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
-    yum -y install nodejs
+# RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
+#     yum -y install nodejs
 
 
 # ADD Scripts
