@@ -35,14 +35,9 @@ RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK}
 #    yum localinstall -y $WORK/influxdb-0.9.3-1.x86_64.rpm
 # RUN wget https://dl.influxdata.com/influxdb/releases/influxdb-0.13.0.x86_64.rpm && \
 #     yum -y localinstall influxdb-0.13.0.x86_64.rpm
-RUN cat <<EOF | sudo tee /etc/yum.repos.d/influxdb.repo
-[influxdb]
-name = InfluxDB Repository - RHEL \$releasever
-baseurl = https://repos.influxdata.com/rhel/\$releasever/\$basearch/stable
-enabled = 1
-gpgcheck = 1
-gpgkey = https://repos.influxdata.com/influxdb.key
-EOF && yum -y install influxdb
+RUN wget https://dl.influxdata.com/influxdb/releases/influxdb-1.0.2.x86_64.rpm && \
+    yum -y localinstall influxdb-1.0.2.x86_64.rpm && \
+    rm -f influxdb-1.0.2.x86_64.rpm
 
 ADD ./post.sh	${WORK}/post.sh
 ADD ./conf ${WORK_CONF}
