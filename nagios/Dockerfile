@@ -36,7 +36,7 @@ RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
     # && chown -R suser:suser ${APP_HOME}
 
 # install Prerequisites
-RUN yum -y install httpd php php-cli gcc glibc glibc-common gd gd-devel net-snmp openssl-devel wget unzip make nodejs npm
+RUN yum -y install httpd php php-cli gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel xinetd unzip nodejs npm
 
 # Create user and group for Nagios to use
 RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
