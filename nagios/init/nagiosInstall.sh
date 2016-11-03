@@ -6,7 +6,7 @@ echo "Nagios core Install"
 
 cd ${NAGIOS_HOME}
 wget https://assets.nagios.com/downloads/nagioscore/releases/nagios-4.2.0.tar.gz
-tar zxf nagios-*.tar.gz
+tar xvf nagios-*.tar.gz
 cd nagios-*
 ./configure --with-command-group=nagcmd --prefix=${NAGIOS_HOME}
 make all
