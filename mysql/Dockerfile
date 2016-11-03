@@ -8,10 +8,14 @@ FROM centos:7
 #         echo "root:S2curity" | chpasswd
 
 # Install default package
-RUN yum -y install tuned tune-util vim bzip2 gzip unzip tar git wget curl hostname sysvinit-tools util-linux net-tools epel-release openssh* sudo yum-utils
+#RUN yum -y install tuned tune-util vim bzip2 gzip unzip tar git wget curl hostname sysvinit-tools util-linux net-tools epel-release openssh* sudo yum-utils
+RUN yum -y install wget epel-release
 
-# Install mysql package 
-RUN yum -y install mysql-server mysql pwgen supervisor bash-completion psmisc; yum clean all
+# Install mysql package
+#RUN yum -y install mysql-server mysql pwgen supervisor bash-completion psmisc; yum clean all
+RUN yum -y install http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm && \
+    yum repolist enabled | grep "mysql.*-community.*" && \
+    yum -y install mysql mysql-server
 
 # sudo suser sshd
 # RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
@@ -30,9 +34,9 @@ RUN mkdir -p $APP_HOME && mkdir -p $WORK
     # && chown -R suser:suser $APP_HOME
 
 ADD ./post.sh $WORK/post.sh
-ADD ./my.cnf	$WORK/my.cnf
+ADD ./my.cnf    $WORK/my.cnf
 
-# RUN echo %sudo	ALL=NOPASSWD: ALL >> /etc/sudoers
+# RUN echo %sudo        ALL=NOPASSWD: ALL >> /etc/sudoers
 RUN chmod 755 $WORK/post.sh && chmod 755 $WORK/my.cnf
 
 # mysql port
