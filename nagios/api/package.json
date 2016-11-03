@@ -12,7 +12,7 @@
     "express": "*",
     "body-parser": "*",
     "request": "*",
-    "fs": "*",
+    "fs": "0.0.2",
     "shelljs": "*"
   }
 }
