@@ -15,18 +15,35 @@ function makedir() {
 }
 
 function initialize_database() {
-       mysql_install_db --defaults-file=${MYSQL_CONF}/my.cnf
-       chown -R mysql:mysql ${MYSQL_DATADIR}
+        echo "Initializing Database..."
+        mysql_install_db --defaults-file=${MYSQL_CONF}/my.cnf
+        chown -R mysql:mysql ${MYSQL_DATADIR}
 }
 
 function set_root_password() {
-       mysqladmin -u root password ${MYSQL_ROOT_PASSWORD}
+        echo "Set root password ..."
+        mysqladmin -u root password ${MYSQL_ROOT_PASSWORD}
 }
 
 function create_database() {
+        echo "Create ${MYSQL_DATABASE} Database ..."
         mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "create database ${MYSQL_DATABASE}"
         mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'"
         mysql -u root -p${MYSQL_ROOT_PASSWORD} -e "FLUSH PRIVILEGES"
+}
+
+function bg_start() {
+        echo "Start app in the background ..."
+        exec /usr/bin/mysqld_safe --defaults-file=${MYSQL_CONF}/my.cnf --datadir=${MYSQL_DATADIR} --basedir=${MYSQL_HOME} --language=${MYSQL_LANG}/english &
+
+        #wait for the startup of mysql
+        RET=1
+        while [[ $RET -ne 0 ]]; do
+                echo "+++++ Waiting for confirmation of mysql service startup ..."
+                sleep 3
+                mysql 2> /dev/null
+                RET=$?
+        done
 }
 
 function bg_stop() {
@@ -44,21 +61,16 @@ else
 fi
 
 if [ ! -d "${MYSQL_DATADIR}" ]; then
-        echo "Initializing Database..."
         initialize_database
 else
         echo "${MYSQL_DATADIR} already initialized. Just start..."
 fi
 
 if [ ! -d ${MYSQL_DATADIR}/${MYSQL_DATABASE} ]; then
-        # Start app in the background
-        /usr/bin/mysqld_safe --defaults-file=${MYSQL_CONF}/my.cnf --datadir=${MYSQL_DATADIR} --basedir=${MYSQL_HOME} --language=${MYSQL_LANG}/english &
-        sleep 3
+        bg_start
 
-        echo "Set root password ..."
         set_root_password
 
-        echo "Create ${MYSQL_DATABASE} Database ..."
         create_database
 
         bg_stop
