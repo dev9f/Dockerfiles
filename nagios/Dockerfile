@@ -36,10 +36,10 @@ RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
     # && chown -R suser:suser ${APP_HOME}
 
 # install Prerequisites
-RUN yum -y install httpd php php-cli gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel xinetd unzip nodejs npm
+RUN yum -y install httpd php php-cli gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel unzip nrpe nodejs npm
 
 # Create user and group for Nagios to use
-RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
+#RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
 
 # install Node.js v4 LTS Argon
 # RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
@@ -53,18 +53,17 @@ ADD ./conf ${WORK}/conf
 ADD ./api ${WORK}/api
 
 # Permission Update
-RUN chmod 755 ${NAGIOS_INIT}/nagiosInstall.sh ${NAGIOS_INIT}/nagiosPlug.sh ${NAGIOS_INIT}/nrpe.sh ${NAGIOS_INIT}/graphios.sh ${WORK}/post.sh
+RUN chmod 755 ${NAGIOS_INIT}/nagiosInstall.sh ${NAGIOS_INIT}/nagiosPlug.sh ${NAGIOS_INIT}/graphios.sh ${WORK}/post.sh
 
 
 # Install Nagios shall start
 RUN ${NAGIOS_INIT}/nagiosInstall.sh
 
-
 # Install Nagios Plugins
 RUN ${NAGIOS_INIT}/nagiosPlug.sh
 
 # Install NRPE
-RUN ${NAGIOS_INIT}/nrpe.sh
+#RUN ${NAGIOS_INIT}/nrpe.sh
 
 # Install Graphios
 RUN ${NAGIOS_INIT}/graphios.sh
