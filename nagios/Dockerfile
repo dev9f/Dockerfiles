@@ -8,7 +8,7 @@ FROM centos:7
 #     echo "root:S2crity" | chpasswd
 
 # Install default package
-RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo 
+RUN yum -y install tar git wget epel-release
 
 # sudo suser sshd
 # RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
@@ -36,10 +36,11 @@ RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
     # && chown -R suser:suser ${APP_HOME}
 
 # install Prerequisites
-RUN yum -y install httpd php php-cli gcc glibc glibc-common gd gd-devel make net-snmp openssl-devel unzip nrpe nodejs npm
+RUN yum -y install httpd gcc glibc glibc-common unzip httpd php gd gd-devel make nrpe nodejs npm
 
 # Create user and group for Nagios to use
 #RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
+RUN usermod -a -G nagios apache
 
 # install Node.js v4 LTS Argon
 # RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
