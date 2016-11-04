@@ -9,11 +9,10 @@ cd ${WORK}
 
 git clone https://github.com/shawn-sterling/graphios.git
 
-cd ${WORK}/graphios
-
 mkdir -p ${GRAPHIOS_HOME}
 
-cp graphios*.py ${GRAPHIOS_HOME}
-cp graphios.cfg ${GRAPHIOS_HOME}
+cp ./graphios/graphios*.py ${GRAPHIOS_HOME}
+cp ./graphios/graphios.cfg ${GRAPHIOS_HOME}
 
-
+## delete source files
+rm -rf ./graphios

@@ -15,3 +15,8 @@ make install-init
 make install-commandmode
 make install-config
 make install-webconf
+
+cd ~
+
+## delete source files
+rm -rf ${NAGIOS_HOME}/nagioscore*

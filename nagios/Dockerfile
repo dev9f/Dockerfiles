@@ -7,8 +7,6 @@ FROM centos:7
 #     echo "suser:S2curity" | chpasswd && \
 #     echo "root:S2crity" | chpasswd
 
-# Install default package
-RUN yum -y install tar git wget epel-release
 
 # sudo suser sshd
 # RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
@@ -35,8 +33,11 @@ ENV APP_HOME="/app" \
 RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
     # && chown -R suser:suser ${APP_HOME}
 
-# install Prerequisites
-RUN yum -y install httpd gcc glibc glibc-common unzip httpd php gd gd-devel make nrpe nodejs npm
+# Install Default, Prerequisites packages
+RUN yum -y install tar git wget epel-release && \
+    yum -y install httpd gcc glibc glibc-common unzip httpd php gd gd-devel make nrpe nodejs npm && \
+    yum clean all
+
 
 # Create user and group for Nagios to use
 #RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
@@ -47,30 +48,19 @@ RUN usermod -a -G nagios apache
 #     yum -y install nodejs
 
 
-# ADD Scripts
-ADD ./post.sh  ${WORK}/post.sh
-ADD ./init ${WORK}/init
-ADD ./conf ${WORK}/conf
-ADD ./api ${WORK}/api
+# ADD Config files
+ADD ./config ${WORK}
 
-# Permission Update
-RUN chmod 755 ${NAGIOS_INIT}/nagiosInstall.sh ${NAGIOS_INIT}/nagiosPlug.sh ${NAGIOS_INIT}/graphios.sh ${WORK}/post.sh
-
-
-# Install Nagios shall start
-RUN ${NAGIOS_INIT}/nagiosInstall.sh
-
-# Install Nagios Plugins
-RUN ${NAGIOS_INIT}/nagiosPlug.sh
-
-# Install NRPE
-#RUN ${NAGIOS_INIT}/nrpe.sh
-
-# Install Graphios
-RUN ${NAGIOS_INIT}/graphios.sh
+# Permission Update, Install Nagios shall start
+RUN chmod 755 ${NAGIOS_INIT}/nagiosInstall.sh ${NAGIOS_INIT}/nagiosPlug.sh ${NAGIOS_INIT}/graphios.sh ${WORK}/post.sh && \
+    ${NAGIOS_INIT}/nagiosInstall.sh && \
+    ${NAGIOS_INIT}/nagiosPlug.sh && \
+    ${NAGIOS_INIT}/graphios.sh
 
 # compress Application
-RUN cd ${WORK} && tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && rm -rf ${NAGIOS_HOME}
+RUN cd ${WORK} && \
+    tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && \
+    rm -rf ${NAGIOS_HOME}
 
 EXPOSE 80
 EXPOSE 8888

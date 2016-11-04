@@ -12,3 +12,7 @@ cd nagios-plugins-*
 ./configure --with-nagios-user=nagios --with-nagios-group=nagios --prefix=${NAGIOS_HOME}
 make
 make install
+cd ~
+
+## delete source files
+rm -rf ${NAGIOS_HOME}/nagios-plugins*
