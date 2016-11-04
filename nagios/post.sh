@@ -46,7 +46,7 @@ function setup_graphios () {
 
     mkdir -p ${GRAPHIOS_HOME}/logs
     mkdir -p ${GRAPHIOS_SPOOL}
-    chown -R nagios:nagcmd ${GRAPHIOS_SPOOL}
+    chown -R nagios:nagios ${GRAPHIOS_SPOOL}
     chmod 755 ${GRAPHIOS_SPOOL}
 
     write_graphios_perf_templ
