@@ -125,5 +125,8 @@ node ${NAGIOS_API_HOME}/app.js &
 # Nagios Start
 ${NAGIOS_HOME}/bin/nagios ${NAGIOS_HOME}/etc/nagios.cfg &
 
+# NRPE Start
+${NAGIOS_HOME}/bin/nrpe &
+
 #httpd start
 apachectl -f /etc/httpd/conf/httpd.conf -DFOREGROUND

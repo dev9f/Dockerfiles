@@ -6,11 +6,19 @@ export NAGIOS_HOME="/app/nagios"
 
 
 cd ${NAGIOS_HOME}
-curl -L -O http://downloads.sourceforge.net/project/nagios/nrpe-2.x/nrpe-2.15/nrpe-2.15.tar.gz
-tar xvf nrpe-*.tar.gz
-cd nrpe-*
-./configure --enable-command-args --with-nagios-user=nagios --with-nagios-group=nagios --with-ssl=/usr/bin/openssl --with-ssl-lib=/usr/lib/x86_64-linux-gnu --prefix=${NAGIOS_HOME}
+wget --no-check-certificate https://github.com/NagiosEnterprises/nrpe/archive/3.0.1.tar.gz
+tar zxf 3*
+cd nrpe*
+./configure --enable-command-args --prefix=${NAGIOS_HOME}
 make all
+make install-groups-users
 make install
-make install-xinetd
-make install-daemon-config
+make install-config
+
+echo >> /etc/services
+echo '# Nagios services' >> /etc/services
+echo 'nrpe    5666/tcp' >> /etc/services
+
+make install-init
+
+sed -i 's/^dont_blame_nrpe=.*/dont_blame_nrpe=1/g' ${NAGIOS_HOME}/etc/nrpe.cfg
