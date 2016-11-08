@@ -35,17 +35,12 @@ RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
 
 # Install Default, Prerequisites packages
 RUN yum -y install tar git wget epel-release && \
-    yum -y install httpd gcc glibc glibc-common unzip httpd php gd gd-devel make openssl openssl-devel perl nodejs npm && \
+    yum -y install httpd gcc glibc glibc-common unzip httpd php gd gd-devel make openssl openssl-devel perl file nodejs npm && \
     yum clean all
 
 
 # Create user and group for Nagios to use
-#RUN useradd nagios && groupadd nagcmd && usermod -a -G nagcmd nagios && usermod -a -G nagcmd apache
-#RUN usermod -a -G nagios apache
-
-# install Node.js v4 LTS Argon
-# RUN curl --silent --location https://rpm.nodesource.com/setup_4.x | bash - && \
-#     yum -y install nodejs
+RUN useradd nagios && usermod -a -G nagios nagios && usermod -a -G nagios apache
 
 
 # ADD Config files
