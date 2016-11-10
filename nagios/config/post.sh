@@ -5,8 +5,6 @@
 set -m
 : "${APP_HOME:=/app}"
 : "${WORK:=/work}"
-: "${NAGIOS_API_HOME:=/app/nagios/api}"
-: "${NAGIOS_API_PORT:=8888}"
 : "${NAGIOS_HOME:=/app/nagios}"
 : "${NAGIOS_USER:=nagiosadmin}"
 : "${NAGIOS_PASS:=qwe123}"
@@ -22,6 +20,9 @@ set -m
 
 
 function setup_nagios_cfg() {
+    chmod -R 755 ${NAGIOS_CFG_OBJECTS}
+    chown -R apache ${NAGIOS_CFG_OBJECTS}
+
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/cfg_file=\/app\/nagios\/etc\/objects\/hosts.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
     cp ${NAGIOS_CFG_OBJECTS}/localhost.cfg ${NAGIOS_CFG_OBJECTS}/hosts.cfg
 
