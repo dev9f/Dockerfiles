@@ -9,8 +9,8 @@ services:
       - influxdb
       - grafana
     ports:
-      - 22:22
-      - 80:80
+      - "22:22"
+      - "80:80"
     environment:
       STIGMA_HOME: /app/stigma
     volumes:
@@ -21,7 +21,7 @@ services:
     build: ./mysql/.
     image: dev9f/mysql
     ports:
-      - 3306:3306
+      - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: stigma
@@ -35,8 +35,9 @@ services:
     links:
       - influxdb
     ports:
-      - 8080:80
-      - 8888:8888
+      - "2222:22"
+      - "8080:80"
+      - "8888:8888"
     environment:
       PREFIX_LOCALHOST: stigma
     volumes:
@@ -47,8 +48,8 @@ services:
     build: ./influxdb/.
     image: dev9f/influxdb
     ports:
-      - 8083:8083
-      - 8086:8086
+      - "8083:8083"
+      - "8086:8086"
     environment:
       IFDB_INIT_DB: stigma
       IFDB_INIT_DB_USER_NM: stigma
@@ -61,7 +62,7 @@ services:
     build: ./grafana/.
     image: dev9f/grafana
     ports:
-      - 3000:3000
+      - "3000:3000"
     environment:
       GF_HOME: /app/grafana
       GF_CONF_FILE: /app/grafana/conf/config.ini

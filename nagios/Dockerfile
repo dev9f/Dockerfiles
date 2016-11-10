@@ -58,6 +58,7 @@ RUN cd ${WORK} && \
     tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && \
     rm -rf ${NAGIOS_HOME}
 
+EXPOSE 22
 EXPOSE 80
 EXPOSE 8888
 
