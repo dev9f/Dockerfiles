@@ -35,9 +35,7 @@ services:
     links:
       - influxdb
     ports:
-      - "2222:22"
       - "8080:80"
-      - "8888:8888"
     environment:
       PREFIX_LOCALHOST: stigma
     volumes:
