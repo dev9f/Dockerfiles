@@ -21,13 +21,6 @@ set -m
 : "${INFLUXDB_ENV_IFDB_INIT_DB_USER_PWD:=stigma}"
 
 
-function setup_nagios_api() {
-    cp -R ${WORK}/api ${NAGIOS_HOME}/
-    sed -i "s/###NAGIOS_API_PORT###/${NAGIOS_API_PORT}/" ${NAGIOS_API_HOME}/app.js
-    cd ${NAGIOS_API_HOME}
-    npm install
-}
-
 function setup_nagios_cfg() {
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/cfg_file=\/app\/nagios\/etc\/objects\/hosts.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
     cp ${NAGIOS_CFG_OBJECTS}/localhost.cfg ${NAGIOS_CFG_OBJECTS}/hosts.cfg
@@ -88,10 +81,6 @@ else
     echo "${NAGIOS_HOME} does not exists."
     tar xvfz ${WORK}/nagios.tar.gz -C /
 
-    #nagios api
-    echo "+++++ Install nagios API server."
-    setup_nagios_api
-
     #cfg directory
     setup_nagios_cfg
 fi
@@ -118,9 +107,6 @@ if [ "${GRAPHIOS_USED}" = "y" ]; then
     nohup  ${GRAPHIOS_HOME}/graphios.py -v --backend=influxdb09 --config_file=${GRAPHIOS_HOME}/graphios.cfg 1> /dev/null 2>&1 & 
 fi
 
-
-# Nagios API Start
-node ${NAGIOS_API_HOME}/app.js &
 
 # Nagios Start
 ${NAGIOS_HOME}/bin/nagios ${NAGIOS_HOME}/etc/nagios.cfg &
