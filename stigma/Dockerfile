@@ -8,7 +8,10 @@ FROM centos:7
 #         echo "root:S2curity" | chpasswd
 
 # Install default package
-RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo 
+RUN yum -y install tar git wget curl net-tools epel-release openssh* yum-utils sudo && \
+    yum clean all
+
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
 # sudo suser sshd
 # RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
@@ -31,10 +34,12 @@ RUN mkdir -p $APP_HOME && mkdir -p $WORK
 
 # Install SW Packages
 RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm && \
-    yum-config-manager --enable remi-php56,remi
+    yum-config-manager --enable remi-php56,remi && \
+    yum clean all
 
 # Install Apache, PHP
-RUN yum -y install httpd mysql php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm
+RUN yum -y install httpd mysql php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm && \
+    yum clean all
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
@@ -46,7 +51,8 @@ RUN yum -y install ansible python-argparse python-pip python-wheel PyYAML python
     pip install --upgrade pip && \
     pip install Jinja2 && \
     wget http://download.gluster.org/pub/gluster/gdeploy/2.0.1-1/CENTOS7/gdeploy-2.0.1-1.el7.centos.noarch.rpm && \
-    yum -y install gdeploy-2.0.1-1.el7.centos.noarch.rpm
+    yum -y install gdeploy-2.0.1-1.el7.centos.noarch.rpm && \
+    yum clean all
 
 # Copy stigma
 ADD ./stigma/ ${WORK}/stigma
@@ -56,7 +62,6 @@ ADD ./post.sh	${WORK}/post.sh
 ADD ./conf ${WORK_CONF}
 RUN chmod 755 ${WORK}/post.sh
 
-EXPOSE 22
 EXPOSE 80
 
 # Start Container

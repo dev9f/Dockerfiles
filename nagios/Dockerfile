@@ -34,13 +34,15 @@ RUN mkdir -p ${APP_HOME} && mkdir -p ${WORK} && mkdir -p ${NAGIOS_HOME}
     # && chown -R suser:suser ${APP_HOME}
 
 # Install Default, Prerequisites packages
-RUN yum -y install tar git wget epel-release && \
+RUN yum -y install tar git wget epel-release openssh-server && \
     yum -y install httpd gcc glibc glibc-common unzip httpd php gd gd-devel make openssl openssl-devel perl file && \
     yum clean all
 
+RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
 # Create user and group for Nagios to use
-RUN useradd nagios && usermod -a -G nagios nagios && usermod -a -G nagios apache
+RUN useradd nagios && usermod -a -G nagios nagios && usermod -a -G nagios apache && \
+    echo "nagios:S2curity" | chpasswd
 
 
 # ADD Config files
@@ -58,6 +60,7 @@ RUN cd ${WORK} && \
     tar cvfz ${WORK}/nagios.tar.gz ${NAGIOS_HOME} && \
     rm -rf ${NAGIOS_HOME}
 
+EXPOSE 22
 EXPOSE 80
 
 CMD ["/work/post.sh"]

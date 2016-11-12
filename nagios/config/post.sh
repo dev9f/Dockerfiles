@@ -20,7 +20,7 @@ set -m
 
 
 function setup_nagios_cfg() {
-    chmod -R 755 ${NAGIOS_CFG_OBJECTS}
+    chmod -R 664 ${NAGIOS_CFG_OBJECTS}
     chown -R apache ${NAGIOS_CFG_OBJECTS}
 
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/cfg_file=\/app\/nagios\/etc\/objects\/hosts.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
@@ -108,6 +108,8 @@ if [ "${GRAPHIOS_USED}" = "y" ]; then
     nohup  ${GRAPHIOS_HOME}/graphios.py -v --backend=influxdb09 --config_file=${GRAPHIOS_HOME}/graphios.cfg 1> /dev/null 2>&1 & 
 fi
 
+# SSH-Server Start
+/usr/sbin/sshd &
 
 # Nagios Start
 ${NAGIOS_HOME}/bin/nagios ${NAGIOS_HOME}/etc/nagios.cfg &

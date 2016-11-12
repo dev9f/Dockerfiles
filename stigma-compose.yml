@@ -9,7 +9,6 @@ services:
       - influxdb
       - grafana
     ports:
-      - 22:22
       - 80:80
     environment:
       STIGMA_HOME: /app/stigma
@@ -35,6 +34,7 @@ services:
     links:
       - influxdb
     ports:
+      - 22:22
       - 8080:80
     environment:
       PREFIX_LOCALHOST: stigma
