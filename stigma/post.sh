@@ -36,6 +36,7 @@ function setup_env() {
 #    sed -i "s|###MYSQL_USERNAME###|${MYSQL_USERNAME}|g" ${STIGMA_HOME}/.env
 #    sed -i "s|###MYSQL_ROOT_PASSWORD###|${MYSQL_ROOT_PASSWORD}|g" ${STIGMA_HOME}/.env
 
+    echo "" >> ${STIGMA_HOME}/.env
     echo "NAGIOS_HOST="${STIGMA_NAGIOS_HOST} >> ${STIGMA_HOME}/.env
     echo "IFDB_HOST="${STIGMA_IFDB_HOST} >> ${STIGMA_HOME}/.env
     echo "GRAFANA_HOST="${STIGMA_GRAFANA_HOST} >> ${STIGMA_HOME}/.env
@@ -52,7 +53,7 @@ function setup_gdeploy() {
 }
 
 function setup_ssh() {
-    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id nagios@${STIGMA_NAGIOS_HOST}
+    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id -i /etc/ssh/ssh_host_rsa_key.pub nagios@${STIGMA_NAGIOS_HOST}
 }
 
 if [ -e ${STIGMA_HOME} ]
