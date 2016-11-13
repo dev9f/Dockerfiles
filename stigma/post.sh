@@ -53,7 +53,7 @@ function setup_gdeploy() {
 }
 
 function setup_ssh() {
-    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id -i /etc/ssh/ssh_host_rsa_key.pub nagios@${STIGMA_NAGIOS_HOST}
+    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id -i ${SSH_PATH}/${SSH_HOST_RSA_KEY}.pub nagios@${STIGMA_NAGIOS_HOST}
 }
 
 if [ -e ${STIGMA_HOME} ]
