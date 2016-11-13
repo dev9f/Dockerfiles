@@ -20,7 +20,7 @@ set -m
 
 
 function setup_nagios_cfg() {
-    chmod -R 664 ${NAGIOS_CFG_OBJECTS}
+    chmod -R 774 ${NAGIOS_CFG_OBJECTS}
     chown -R apache ${NAGIOS_CFG_OBJECTS}
 
     sed -i "s/cfg_file=\/app\/nagios\/etc\/objects\/localhost.cfg/cfg_file=\/app\/nagios\/etc\/objects\/hosts.cfg/" ${NAGIOS_HOME}/etc/nagios.cfg
