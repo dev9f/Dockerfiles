@@ -47,13 +47,15 @@ function setup_env() {
 }
 
 function setup_gdeploy() {
+    echo "+++++ Setup gdeploy ..."
     mkdir -p ${STIGMA_HOME}/gdeploy/conf
 
     echo "${GLUSTERFS_MASTER}" >> /etc/ansible/hosts
 }
 
 function setup_ssh() {
-    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id -i ${SSH_PATH}/${SSH_HOST_RSA_KEY}.pub nagios@${STIGMA_NAGIOS_HOST}
+    echo "+++++ Setup ssh ..."
+    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id -o StrictHostKeyChecking=no -i ${SSH_PATH}/${SSH_HOST_RSA_KEY}.pub nagios@${STIGMA_NAGIOS_HOST}
 }
 
 if [ -e ${STIGMA_HOME} ]
