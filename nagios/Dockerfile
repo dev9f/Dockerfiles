@@ -42,7 +42,7 @@ RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
 
 # Create user and group for Nagios to use
 RUN useradd nagios && usermod -a -G nagios nagios && usermod -a -G nagios apache && \
-    echo "nagios:S2curity" | chpasswd
+    echo "root:S2curity" | chpasswd
 
 
 # ADD Config files
