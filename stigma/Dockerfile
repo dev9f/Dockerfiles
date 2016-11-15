@@ -35,7 +35,7 @@ RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm &
     yum clean all
 
 # Install Apache, PHP
-RUN yum -y install httpd mysql php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm && \
+RUN yum -y install httpd mysql php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm php-pecl-ssh2 && \
     yum clean all
 
 # Install Composer
