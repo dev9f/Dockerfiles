@@ -10,7 +10,6 @@ set -m
 : "${MYSQL_DATABASE:=stigma}"
 : "${MYSQL_USERNAME:=root}"
 : "${MYSQL_ROOT_PASSWORD:=password}"
-: "${NAGIOS_PASSWORD:=S2curity}"
 : "${GLUSTERFS_MASTER:=192.168.1.200}"
 
 function setup_httpd_vhosts() {
@@ -53,11 +52,6 @@ function setup_gdeploy() {
     echo "${GLUSTERFS_MASTER}" >> /etc/ansible/hosts
 }
 
-function setup_ssh() {
-    echo "+++++ Setup ssh ..."
-    sshpass -p ${NAGIOS_PASSWORD} ssh-copy-id -o StrictHostKeyChecking=no -i ${SSH_PATH}/${SSH_HOST_RSA_KEY}.pub nagios@${STIGMA_NAGIOS_HOST}
-}
-
 if [ -e ${STIGMA_HOME} ]
 then
     echo "+++++ ${STIGMA_HOME} already exists."
@@ -78,8 +72,6 @@ else
 
     setup_gdeploy
 fi
-
-setup_ssh
 
 # Application Start - Httpd
 /usr/sbin/httpd -D FOREGROUND

@@ -23,12 +23,7 @@ RUN sed -i 's/Defaults    requiretty/\#Defaults    requiretty/g' /etc/sudoers
 # Set Env
 ENV APP_HOME="/app" \
     WORK="/work" \
-    WORK_CONF="/work/conf" \
-    SSH_PATH="/etc/ssh" \
-    SSH_HOST_RSA_KEY="ssh_host_rsa_key"
-
-# Make SSH key
-RUN ssh-keygen -t rsa -f ${SSH_PATH}/${SSH_HOST_RSA_KEY} -N ''
+    WORK_CONF="/work/conf"
 
 # Make default directory
 # RUN mkdir -p $APP_HOME && mkdir -p $WORK && chown -R suser:suser $APP_HOME 
