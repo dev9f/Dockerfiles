@@ -23,18 +23,6 @@ function setup_env() {
     sed -i "s/DB_USERNAME=/#DB_USERNAME=/g" ${STIGMA_HOME}/.env
     sed -i "s/DB_PASSWORD=/#DB_PASSWORD=/g" ${STIGMA_HOME}/.env
 
-#    cat <<'EOF' >> ${STIGMA_HOME}/.env
-#    DB_HOST=###MYSQL_HOST###
-#    DB_DATABASE=###MYSQL_DATABASE###
-#    DB_USERNAME=###MYSQL_USERNAME###
-#    DB_PASSWORD=###MYSQL_ROOT_PASSWORD###
-#    EOF
-#
-#    sed -i "s|###MYSQL_HOST###|${MYSQL_HOST}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###MYSQL_DATABASE###|${MYSQL_DATABASE}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###MYSQL_USERNAME###|${MYSQL_USERNAME}|g" ${STIGMA_HOME}/.env
-#    sed -i "s|###MYSQL_ROOT_PASSWORD###|${MYSQL_ROOT_PASSWORD}|g" ${STIGMA_HOME}/.env
-
     echo "" >> ${STIGMA_HOME}/.env
     echo "NAGIOS_HOST="${STIGMA_NAGIOS_HOST} >> ${STIGMA_HOME}/.env
     echo "IFDB_HOST="${STIGMA_IFDB_HOST} >> ${STIGMA_HOME}/.env
@@ -61,14 +49,16 @@ else
     setup_httpd_vhosts
 
     ## Laravel Setting
-    # cd ${APP_HOME} && git clone https://github.com/stigma2/stigma2-dev.git ${STIGMA_HOME}
     cp -R ${WORK}/stigma/ ${APP_HOME}/
     cd ${STIGMA_HOME} && chmod -R 777 storage && composer install
     cp ${STIGMA_HOME}/.env.example ${STIGMA_HOME}/.env
     cd ${STIGMA_HOME} && php artisan key:generate
     setup_env
     cd ${STIGMA_HOME} && php artisan migrate && php artisan db:seed
-    chmod 777 ${STIGMA_HOME}/config # && chown nagios:apache ${STIGMA_HOME}/config
+    chmod 777 ${STIGMA_HOME}/config
+    cd ${STIGMA_HOME} && npm install --save
+    cd ${STIGMA_HOME}/public && ../node_modules/.bin/bower install --save --allow-root
+    cd ${STIGMA_HOME} && npm run prod
 
     setup_gdeploy
 fi

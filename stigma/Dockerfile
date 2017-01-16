@@ -38,6 +38,11 @@ RUN yum -y install http://rpms.famillecollet.com/enterprise/remi-release-7.rpm &
 RUN yum -y install httpd mysql php php-gd php-mysql php-mcrypt php-mbstring php-pdo php-xml php-fpm php-pecl-ssh2 && \
     yum clean all
 
+# Install Node.js
+RUN curl --silent --location https://rpm.nodesource.com/setup_6.x | bash - && \
+    yum -y install nodejs && \
+    yum clean all
+
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
