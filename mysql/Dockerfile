@@ -12,10 +12,12 @@ FROM centos:7
 RUN yum -y install wget epel-release
 
 # Install mysql package
-#RUN yum -y install mysql-server mysql pwgen supervisor bash-completion psmisc; yum clean all
-RUN yum -y install http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm && \
-    yum repolist enabled | grep "mysql.*-community.*" && \
-    yum -y install mysql mysql-server
+RUN yum -y install http://repo.mysql.com/yum/mysql-5.5-community/el/7/x86_64/mysql-community-common-5.5.53-2.el7.x86_64.rpm && \
+    yum -y install http://repo.mysql.com/yum/mysql-5.5-community/el/7/x86_64/mysql-community-libs-5.5.53-2.el7.x86_64.rpm && \
+    yum -y install http://repo.mysql.com/yum/mysql-5.5-community/el/7/x86_64/mysql-community-client-5.5.53-2.el7.x86_64.rpm && \
+    yum -y install http://repo.mysql.com/yum/mysql-5.5-community/el/7/x86_64/mysql-community-server-5.5.53-2.el7.x86_64.rpm && \
+    yum -y install mysql mysql-server && \
+    yum clean all
 
 # sudo suser sshd
 # RUN echo suser ALL=/etc/init.d/sshd >> /etc/sudoers
