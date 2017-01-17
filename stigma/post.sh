@@ -35,7 +35,7 @@ function setup_env() {
 
 function setup_gdeploy() {
     echo "+++++ Setup gdeploy ..."
-    mkdir -p ${STIGMA_HOME}/gdeploy/conf
+    mkdir -p ${STIGMA_HOME}/gdeploy/conf && chmod 777 ${STIGMA_HOME}/gdeploy/conf
 
     echo "${GLUSTERFS_MASTER}" >> /etc/ansible/hosts
 }
