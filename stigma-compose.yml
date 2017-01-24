@@ -12,6 +12,7 @@ services:
       - 80:80
     environment:
       STIGMA_HOME: /app/stigma
+      GLUSTERFS_MASTER: 172.16.236.129
     volumes:
       - ./pvol:/app
     container_name: stigma
